@@ -1,0 +1,29 @@
+version: '3.2'
+
+services:
+
+    api:
+        build: .
+        ports:
+            - 8000:8000
+        depends_on:
+            - db
+            - cache
+        restart: always
+        env_file: .env
+        environment:
+            DB_HOST: db
+
+    db:
+        image: cualbondi/postgres
+        restart: always
+        volumes:
+            - db:/var/lib/postgresql/data
+        env_file: .env
+
+    cache:
+        image: memcached:alpine
+        restart: always
+
+volumes:
+    db:
