@@ -2,8 +2,7 @@ from django.contrib.gis import admin
 from leaflet.admin import LeafletGeoAdmin
 
 from apps.core.models import (Linea, Recorrido, Tarifa, Parada,
-                              Horario, Posicion, FacebookPage)
-from apps.editor.models import RecorridoProposed
+                              Horario, Posicion)
 
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
@@ -63,10 +62,6 @@ class RecorridoCustomAdmin(LeafletGeoAdmin):
     inlines = (HorarioAdminInline,)
     exclude = ('horarios',)
 
-class RecorridoProposedCustomAdmin(LeafletGeoAdmin):
-    display_raw = True
-    search_fields = ['nombre', 'linea__nombre']
-    exclude = ('horarios',)
 
 class ParadaCustomAdmin(admin.OSMGeoAdmin):
     display_raw = True
@@ -86,8 +81,6 @@ class ParadaCustomAdmin(admin.OSMGeoAdmin):
 
 admin.site.register(Linea, CustomAdmin)
 admin.site.register(Recorrido, RecorridoCustomAdmin)
-admin.site.register(RecorridoProposed, RecorridoProposedCustomAdmin)
 admin.site.register(Parada, ParadaCustomAdmin)
 admin.site.register(Tarifa)
 admin.site.register(Posicion)
-admin.site.register(FacebookPage)

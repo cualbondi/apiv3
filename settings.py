@@ -108,41 +108,18 @@ SECRET_KEY = '=tr&%05vw6&s4eoq)wdj(d&(56#cq@5k0b-c$^v6vr)#%e(c+&'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'apps.core.middleware.WhodidMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+
 )
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.facebook.FacebookAppOAuth2',
-    'social.backends.facebook.FacebookOAuth2',
-    'social_auth.backends.facebook.FacebookBackend',
-    'django.contrib.auth.backends.ModelBackend',
+
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.contrib.messages.context_processors.messages",
-    "django.core.context_processors.request",
-    "apps.core.context_processors.lista_ciudades",
-    "apps.core.context_processors.get_ciudad_actual",
-    "apps.core.context_processors.show_android_alert",
-    "apps.core.context_processors.home_url",
-    "apps.core.context_processors.facebook_app_id",
+  'django.contrib.auth.context_processors.auth'
 )
 
 ROOT_URLCONF = 'urls'
@@ -157,7 +134,6 @@ TEMPLATE_DIRS = (
 GOOGLE_API = "//maps.google.com/maps/api/js?v=3.6&sensor=false"
 
 INSTALLED_APPS = (
-    'social.apps.django_app.default',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -175,9 +151,6 @@ INSTALLED_APPS = (
     'imagekit',
     'leaflet',
     'piston',
-#    'moderacion',
-#    'editor',
-#    'django_extensions',
     'rest_framework',
     'rest_framework_tracking',
     'django_nose',
@@ -186,10 +159,6 @@ INSTALLED_APPS = (
     'apps.api2',
     'apps.catastro',
     'apps.core',
-    'apps.usuarios',
-    'apps.anuncios',
-    'apps.mobile_updates',
-    'apps.editor',
 )
 
 REST_FRAMEWORK = {
@@ -267,11 +236,10 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.environ.get('DB_NAME', 'geocualbondidb'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', ''),
-        'PORT': os.environ.get('DB_PORT', ''),
+        'NAME': os.environ.get('POSTGRES_DB', 'geocualbondidb'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'db')
     }
 }
 

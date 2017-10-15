@@ -7,7 +7,6 @@ import uuid
 
 from apps.core.managers import RecorridoManager
 from apps.catastro.models import Ciudad
-from apps.usuarios.models import RecorridoFavorito
 
 from django.core.urlresolvers import reverse
 
@@ -84,14 +83,6 @@ class Recorrido(models.Model):
     def __unicode__(self):
         #return str(self.ciudad_set.all()[0]) + " - " + str(self.linea) + " - " + self.nombre
         return str(self.linea) + " - " + self.nombre
-
-    def es_favorito(self, usuario):
-        """ Verificar si este recorrido esta marcado como favorito para <usuario> """
-        try:
-            favorito = RecorridoFavorito.objects.get(recorrido=self, usuario=usuario)
-            return favorito.activo
-        except ObjectDoesNotExist:
-            return False
 
     def save(self, *args, **kwargs):
         # Generar el SLUG a partir del origen y destino del recorrido
