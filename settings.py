@@ -111,15 +111,13 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-
-)
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-  'django.contrib.auth.context_processors.auth'
+  'django.contrib.auth.context_processors.auth',
 )
 
 ROOT_URLCONF = 'urls'

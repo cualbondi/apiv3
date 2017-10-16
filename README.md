@@ -17,28 +17,21 @@
 
 `mv .env.example .env && nano .env`
 
-**Build the image**
+**Run the containers and buid**
 
-`docker-compose build`
-
-**Run the containers**
-
-`docker-compose up -d` 
-
-**NOTE**: It tooks a little bit of time (seconds). You have to wait for it, before run the migrations. 
-You can see if it is ready with `docker-compose logs -f api` command.
+`docker-compose up --build` 
 
 **Run the migrations**
 
-`docker-compose exec api python manage.py syncdb`
+`docker-compose exec api python manage.py migrate`
 
-**Run the fixtures**
+**Load database from dump**
 
-`docker-compose exec api util/load_fixtures.sh`
+`cat dump.sql | docker exec -i api_db_1 sh -c "pg_restore -C -Fc -j8 | psql -U postgres"`
 
 #### Ready!
 
-Now you can go to http://localhost:8000/ in the browser and enjoy cualbondi.
+Now you can go to http://localhost:8000/ in the browser and enjoy cualbondi api.
 
 To access django's admin interface go to http://localhost:8000/admin/ and login with user `admin` pass `admin`
 
