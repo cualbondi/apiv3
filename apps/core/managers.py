@@ -443,7 +443,7 @@ SELECT
   li.slug as lineaslug,
   inicio,
   fin,
-  ST_AsText(ruta) as ruta_corta,
+  ST_AsGeoJSON(ruta) as ruta_corta,
   round(long_ruta::numeric, 2) as long_ruta,
   round(long_pata::numeric, 2) as long_pata,
   coalesce(re.color_polilinea, li.color_polilinea, '#000') as color_polilinea,
