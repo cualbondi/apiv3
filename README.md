@@ -23,11 +23,11 @@
 
 **Run the migrations**
 
-`docker-compose exec api python manage.py migrate`
+`docker-compose exec --rm api python manage.py migrate`
 
 **Load database from dump**
 
-`cat dump.sql | docker exec -i api_db_1 sh -c "pg_restore -C -Fc -j8 | psql -U postgres"`
+`cat dump.sql | docker exec --rm -i api_db_1 sh -c "pg_restore -C -Fc -j8 | psql -U postgres"`
 
 #### Ready!
 
