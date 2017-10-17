@@ -27,7 +27,7 @@
 
 **Load database from dump**
 
-`cat dump.sql | docker exec --rm -i api_db_1 sh -c "pg_restore -C -Fc -j8 | psql -U postgres"`
+`cat dump.sql | docker exec -i api_db_1 sh -c "pg_restore -C -Fc -j8 | psql -U <YOUR_ENV_POSTGRES_USER> <YOUR_ENV_POSTGRES_DB>"`
 
 #### Ready!
 
