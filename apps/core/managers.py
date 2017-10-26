@@ -35,36 +35,36 @@ class RecorridoManager(models.GeoManager):
             (
                 SELECT *,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as ruta_corta,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as ruta_corta2,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as long_ruta,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as long_ruta2,
-                ST_Distance_Sphere(ll11, re1_ruta) as long_pata,
-                ST_Distance_Sphere(ll22, re2_ruta) as long_pata2,
-                ST_Distance_Sphere(ll21, ll12) as long_pata_transbordo
+                ST_DistanceSphere(ll11, re1_ruta) as long_pata,
+                ST_DistanceSphere(ll22, re2_ruta) as long_pata2,
+                ST_DistanceSphere(ll21, ll12) as long_pata_transbordo
             FROM (
                 SELECT
                     re1.id as id,
@@ -113,13 +113,13 @@ class RecorridoManager(models.GeoManager):
                     and
                         ST_DWithin(ll21, ll12, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1_ruta, ll11)
+                        ST_LineLocatePoint(re1_ruta, ll11)
                         <
-                        ST_Line_Locate_Point(re1_ruta, ll12 )
+                        ST_LineLocatePoint(re1_ruta, ll12 )
                     and
-                        ST_Line_Locate_Point(re2_ruta, ll21 )
+                        ST_LineLocatePoint(re2_ruta, ll21 )
                         <
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll22)
                     and
                         (not re1_paradas_completas) and (not re2_paradas_completas)
                 )
@@ -127,36 +127,36 @@ class RecorridoManager(models.GeoManager):
             UNION
             SELECT *,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as ruta_corta,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as ruta_corta2,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as long_ruta,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as long_ruta2,
-                ST_Distance_Sphere(ll11, re1_ruta) as long_pata,
-                ST_Distance_Sphere(ll22, re2_ruta) as long_pata2,
-                ST_Distance_Sphere(ll21, ll12) as long_pata_transbordo
+                ST_DistanceSphere(ll11, re1_ruta) as long_pata,
+                ST_DistanceSphere(ll22, re2_ruta) as long_pata2,
+                ST_DistanceSphere(ll21, ll12) as long_pata_transbordo
             FROM (
                 SELECT
                     re1.id as id,
@@ -205,13 +205,13 @@ class RecorridoManager(models.GeoManager):
                     and
                         ST_DWithin(ll21, ll12, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1_ruta, ll11)
+                        ST_LineLocatePoint(re1_ruta, ll11)
                         <
-                        ST_Line_Locate_Point(re1_ruta, ll12 )
+                        ST_LineLocatePoint(re1_ruta, ll12 )
                     and
-                        ST_Line_Locate_Point(re2_ruta, ll21 )
+                        ST_LineLocatePoint(re2_ruta, ll21 )
                         <
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll22)
                     and
                         re1_paradas_completas and (not re2_paradas_completas)
                     and 
@@ -220,36 +220,36 @@ class RecorridoManager(models.GeoManager):
             UNION
             SELECT *,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as ruta_corta,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as ruta_corta2,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as long_ruta,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as long_ruta2,
-                ST_Distance_Sphere(ll11, re1_ruta) as long_pata,
-                ST_Distance_Sphere(ll22, re2_ruta) as long_pata2,
-                ST_Distance_Sphere(ll21, ll12) as long_pata_transbordo
+                ST_DistanceSphere(ll11, re1_ruta) as long_pata,
+                ST_DistanceSphere(ll22, re2_ruta) as long_pata2,
+                ST_DistanceSphere(ll21, ll12) as long_pata_transbordo
             FROM (
                 SELECT
                     re1.id as id,
@@ -298,13 +298,13 @@ class RecorridoManager(models.GeoManager):
                     and
                         ST_DWithin(ll21, ll12, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1_ruta, ll11)
+                        ST_LineLocatePoint(re1_ruta, ll11)
                         <
-                        ST_Line_Locate_Point(re1_ruta, ll12 )
+                        ST_LineLocatePoint(re1_ruta, ll12 )
                     and
-                        ST_Line_Locate_Point(re2_ruta, ll21 )
+                        ST_LineLocatePoint(re2_ruta, ll21 )
                         <
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll22)
                     and
                         (not re1_paradas_completas) and re2_paradas_completas
                     and
@@ -313,36 +313,36 @@ class RecorridoManager(models.GeoManager):
             UNION
             SELECT *,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as ruta_corta,
                 ST_AsText(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as ruta_corta2,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re1_ruta,
-                        ST_Line_Locate_Point(re1_ruta, ll11),
-                        ST_Line_Locate_Point(re1_ruta, ll12)
+                        ST_LineLocatePoint(re1_ruta, ll11),
+                        ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
                     ) as long_ruta,
                 ST_Length(
-                    ST_Line_Substring(
+                    ST_LineSubstring(
                         re2_ruta,
-                        ST_Line_Locate_Point(re2_ruta, ll21),
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll21),
+                        ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
                     ) as long_ruta2,
-                ST_Distance_Sphere(ll11, re1_ruta) as long_pata,
-                ST_Distance_Sphere(ll22, re2_ruta) as long_pata2,
-                ST_Distance_Sphere(ll21, ll12) as long_pata_transbordo
+                ST_DistanceSphere(ll11, re1_ruta) as long_pata,
+                ST_DistanceSphere(ll22, re2_ruta) as long_pata2,
+                ST_DistanceSphere(ll21, ll12) as long_pata_transbordo
             FROM (
                 SELECT
                     re1.id as id,
@@ -391,13 +391,13 @@ class RecorridoManager(models.GeoManager):
                     and
                         ST_DWithin(ll21, ll12, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1_ruta, ll11)
+                        ST_LineLocatePoint(re1_ruta, ll11)
                         <
-                        ST_Line_Locate_Point(re1_ruta, ll12 )
+                        ST_LineLocatePoint(re1_ruta, ll12 )
                     and
-                        ST_Line_Locate_Point(re2_ruta, ll21 )
+                        ST_LineLocatePoint(re2_ruta, ll21 )
                         <
-                        ST_Line_Locate_Point(re2_ruta, ll22)
+                        ST_LineLocatePoint(re2_ruta, ll22)
                     and
                         re1_paradas_completas and re2_paradas_completas
                     and
@@ -443,7 +443,8 @@ SELECT
   li.slug as lineaslug,
   inicio,
   fin,
-  ST_AsGeoJSON(ruta) as ruta_corta,
+  ST_AsText(ruta) as ruta_corta,
+  ST_AsGeoJSON(ruta) as ruta_corta_geojson,
   round(long_ruta::numeric, 2) as long_ruta,
   round(long_pata::numeric, 2) as long_pata,
   coalesce(re.color_polilinea, li.color_polilinea, '#000') as color_polilinea,
@@ -544,7 +545,7 @@ FROM
           min(ST_Distance(p2.latlng,%(puntoB)s)) OVER (PARTITION BY r.id) as min_d2,
           ST_Distance(p1.latlng,%(puntoA)s) as d1,
           ST_Distance(p2.latlng,%(puntoB)s) as d2,
-          ST_Line_Locate_Point(r.ruta, p2.latlng) - ST_Line_Locate_Point(r.ruta, p1.latlng) as diff
+          ST_LineLocatePoint(r.ruta, p2.latlng) - ST_LineLocatePoint(r.ruta, p1.latlng) as diff
         FROM
           core_recorrido    as r
           JOIN core_horario as h1 on (h1.recorrido_id = r.id)
@@ -554,8 +555,8 @@ FROM
         WHERE
           ST_Intersects( %(bufferA)s, p1.latlng) and
           ST_Intersects( %(bufferB)s, p2.latlng) and
-          ST_Line_Locate_Point(r.ruta, p1.latlng) <
-          ST_Line_Locate_Point(r.ruta, p2.latlng) and
+          ST_LineLocatePoint(r.ruta, p1.latlng) <
+          ST_LineLocatePoint(r.ruta, p2.latlng) and
           r.paradas_completas
       ) as rec
     WHERE
@@ -744,10 +745,10 @@ FROM
                         core_horario     as h
                         JOIN core_parada as p on (p.id = h.parada_id)
                     WHERE
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, 1),4326)) < 100
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, 1),4326)) < 100
                         AND h.recorrido_id = subquery.id
                     ORDER BY
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, 1),4326)) ASC
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, 1),4326)) ASC
                     LIMIT 1
                     ) as p11ll,
                 (
@@ -757,10 +758,10 @@ FROM
                         core_horario     as h
                         JOIN core_parada as p on (p.id = h.parada_id)
                     WHERE
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, ST_NPoints(subquery.ruta_corta::Geometry)),4326)) < 100
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, ST_NPoints(subquery.ruta_corta::Geometry)),4326)) < 100
                         AND h.recorrido_id = subquery.id
                     ORDER BY
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, ST_NPoints(subquery.ruta_corta::Geometry)),4326)) ASC
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta::Geometry, ST_NPoints(subquery.ruta_corta::Geometry)),4326)) ASC
                     LIMIT 1
                     ) as p12ll,
                 (
@@ -770,10 +771,10 @@ FROM
                         core_horario     as h
                         JOIN core_parada as p on (p.id = h.parada_id)
                     WHERE
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, 1),4326)) < 100
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, 1),4326)) < 100
                         AND h.recorrido_id = subquery.id2
                     ORDER BY
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, 1),4326)) ASC
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, 1),4326)) ASC
                     LIMIT 1
                     ) as p21ll,
                 (
@@ -783,10 +784,10 @@ FROM
                         core_horario     as h
                         JOIN core_parada as p on (p.id = h.parada_id)
                     WHERE
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, ST_NPoints(subquery.ruta_corta2::Geometry)),4326)) < 100
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, ST_NPoints(subquery.ruta_corta2::Geometry)),4326)) < 100
                         AND h.recorrido_id = subquery.id2
                     ORDER BY
-                        ST_Distance_Sphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, ST_NPoints(subquery.ruta_corta2::Geometry)),4326)) ASC
+                        ST_DistanceSphere(setsrid(p.latlng,4326), setsrid(ST_PointN(subquery.ruta_corta2::Geometry, ST_NPoints(subquery.ruta_corta2::Geometry)),4326)) ASC
                     LIMIT 1
                     ) as p22ll
             FROM (
@@ -804,36 +805,36 @@ FROM
                     re1.fin as fin,
                     re2.fin as fin2,
                     ST_AsText(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re1.ruta,
-                            ST_Line_Locate_Point(re1.ruta, %(puntoA)s),
-                            ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
+                            ST_LineLocatePoint(re1.ruta, %(puntoA)s),
+                            ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
                             )::Geography
                         ) as ruta_corta,
                     ST_AsText(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re2.ruta,
-                            ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
-                            ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                            ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
+                            ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                             )::Geography
                         ) as ruta_corta2,
                     ST_Length(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re1.ruta,
-                            ST_Line_Locate_Point(re1.ruta, %(puntoA)s),
-                            ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
+                            ST_LineLocatePoint(re1.ruta, %(puntoA)s),
+                            ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
                             )::Geography
                         ) as long_ruta,
                     ST_Length(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re2.ruta,
-                            ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
-                            ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                            ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
+                            ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                             )::Geography
                         ) as long_ruta2,
-                    ST_Distance_Sphere(ST_GeomFromText(%(puntoA)s), re1.ruta) as long_pata,
-                    ST_Distance_Sphere(ST_GeomFromText(%(puntoB)s), re2.ruta) as long_pata2,
-                    ST_Distance_Sphere(re1.ruta, re2.ruta) as long_pata_transbordo
+                    ST_DistanceSphere(ST_GeomFromText(%(puntoA)s), re1.ruta) as long_pata,
+                    ST_DistanceSphere(ST_GeomFromText(%(puntoB)s), re2.ruta) as long_pata2,
+                    ST_DistanceSphere(re1.ruta, re2.ruta) as long_pata_transbordo
 
                 FROM
                     core_recorrido as re1
@@ -847,13 +848,13 @@ FROM
                     and
                         ST_DWithin(re1.ruta, re2.ruta, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1.ruta, %(puntoA)s)
+                        ST_LineLocatePoint(re1.ruta, %(puntoA)s)
                         <
-                        ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
+                        ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
                     and
-                        ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
+                        ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
                         <
-                        ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                        ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                 ) as subquery
             ORDER BY (cast(long_pata+long_pata2+long_pata_transbordo as integer)*100 + ( cast(long_ruta as integer) + cast(long_ruta2 as integer) ) ) ASC
         ;"""
@@ -906,24 +907,24 @@ FROM
                                 SELECT
                                     *,
                                     ST_Length(ruta_corta::Geography) as long_ruta,
-                                    ST_Distance_Sphere(ST_GeomFromText(%(puntoA)s),ruta_corta) +
-                                    ST_Distance_Sphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
+                                    ST_DistanceSphere(ST_GeomFromText(%(puntoA)s),ruta_corta) +
+                                    ST_DistanceSphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
                                 FROM
                                 (
                                     SELECT
                                         *,
-                                        ST_Line_Substring(
-                                            ST_Line_Substring(ruta, 0, 0.5),
-                                            ST_Line_Locate_Point(ST_Line_Substring(ruta, 0, 0.5),       %(puntoA)s),
-                                            ST_Line_Locate_Point(ST_Line_Substring(ruta, 0, 0.5),       %(puntoB)s)
+                                        ST_LineSubstring(
+                                            ST_LineSubstring(ruta, 0, 0.5),
+                                            ST_LineLocatePoint(ST_LineSubstring(ruta, 0, 0.5),       %(puntoA)s),
+                                            ST_LineLocatePoint(ST_LineSubstring(ruta, 0, 0.5),       %(puntoB)s)
                                         ) as ruta_corta
                                     FROM
                                         core_recorrido
                                     WHERE
-                                        ST_DWithin(ST_GeomFromText(%(puntoA)s), ST_Line_Substring(ruta, 0, 0.5), %(rad1)s) and
-                                        ST_DWithin(ST_GeomFromText(%(puntoB)s), ST_Line_Substring(ruta, 0, 0.5), %(rad2)s) and
-                                        ST_Line_Locate_Point(ST_Line_Substring(ruta, 0, 0.5), %(puntoA)s) <
-                                            ST_Line_Locate_Point(ST_Line_Substring(ruta, 0, 0.5), %(puntoB)s)
+                                        ST_DWithin(ST_GeomFromText(%(puntoA)s), ST_LineSubstring(ruta, 0, 0.5), %(rad1)s) and
+                                        ST_DWithin(ST_GeomFromText(%(puntoB)s), ST_LineSubstring(ruta, 0, 0.5), %(rad2)s) and
+                                        ST_LineLocatePoint(ST_LineSubstring(ruta, 0, 0.5), %(puntoA)s) <
+                                            ST_LineLocatePoint(ST_LineSubstring(ruta, 0, 0.5), %(puntoB)s)
                                 ) as primera_inner
                             )
                             UNION
@@ -931,23 +932,23 @@ FROM
                                 SELECT
                                     *,
                                     ST_Length(ruta_corta::Geography) as long_ruta,
-                                    ST_Distance_Sphere(ST_GeomFromText(%(puntoA)s),ruta_corta) + ST_Distance_Sphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
+                                    ST_DistanceSphere(ST_GeomFromText(%(puntoA)s),ruta_corta) + ST_DistanceSphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
                                 FROM
                                 (
                                     SELECT
                                         *,
-                                        ST_Line_Substring(
-                                            ST_Line_Substring(ruta, 0.5, 1),
-                                            ST_Line_Locate_Point(ST_Line_Substring(ruta, 0.5, 1),       %(puntoA)s),
-                                            ST_Line_Locate_Point(ST_Line_Substring(ruta, 0.5, 1),       %(puntoB)s)
+                                        ST_LineSubstring(
+                                            ST_LineSubstring(ruta, 0.5, 1),
+                                            ST_LineLocatePoint(ST_LineSubstring(ruta, 0.5, 1),       %(puntoA)s),
+                                            ST_LineLocatePoint(ST_LineSubstring(ruta, 0.5, 1),       %(puntoB)s)
                                         ) as ruta_corta
                                     FROM
                                         core_recorrido
                                     WHERE
-                                        ST_DWithin(ST_GeomFromText(%(puntoA)s), ST_Line_Substring(ruta, 0.5, 1), %(rad1)s) and
-                                        ST_DWithin(ST_GeomFromText(%(puntoB)s), ST_Line_Substring(ruta, 0.5, 1), %(rad2)s) and
-                                        ST_Line_Locate_Point(ST_Line_Substring(ruta, 0.5, 1), %(puntoA)s) <
-                                        ST_Line_Locate_Point(ST_Line_Substring(ruta, 0.5, 1), %(puntoB)s)
+                                        ST_DWithin(ST_GeomFromText(%(puntoA)s), ST_LineSubstring(ruta, 0.5, 1), %(rad1)s) and
+                                        ST_DWithin(ST_GeomFromText(%(puntoB)s), ST_LineSubstring(ruta, 0.5, 1), %(rad2)s) and
+                                        ST_LineLocatePoint(ST_LineSubstring(ruta, 0.5, 1), %(puntoA)s) <
+                                        ST_LineLocatePoint(ST_LineSubstring(ruta, 0.5, 1), %(puntoB)s)
                                 ) as segunda_inner
                             )
                             UNION
@@ -955,23 +956,23 @@ FROM
                                 SELECT
                                     *,
                                     ST_Length(ruta_corta::Geography) as long_ruta,
-                                    ST_Distance_Sphere(ST_GeomFromText(%(puntoA)s),ruta_corta) + ST_Distance_Sphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
+                                    ST_DistanceSphere(ST_GeomFromText(%(puntoA)s),ruta_corta) + ST_DistanceSphere(ST_GeomFromText(%(puntoB)s),ruta_corta) as long_pata
                                 FROM
                                 (
                                     SELECT
                                         *,
-                                        ST_Line_Substring(
+                                        ST_LineSubstring(
                                             ruta,
-                                            ST_Line_Locate_Point(ruta, %(puntoA)s),
-                                            ST_Line_Locate_Point(ruta, %(puntoB)s)
+                                            ST_LineLocatePoint(ruta, %(puntoA)s),
+                                            ST_LineLocatePoint(ruta, %(puntoB)s)
                                         ) as ruta_corta
                                     FROM
                                         core_recorrido
                                     WHERE
                                         ST_DWithin(ST_GeomFromText(%(puntoA)s), ruta, %(rad1)s) and
                                         ST_DWithin(ST_GeomFromText(%(puntoB)s), ruta, %(rad2)s) and
-                                        ST_Line_Locate_Point(ruta, %(puntoA)s) <
-                                        ST_Line_Locate_Point(ruta, %(puntoB)s)
+                                        ST_LineLocatePoint(ruta, %(puntoA)s) <
+                                        ST_LineLocatePoint(ruta, %(puntoB)s)
                                 ) as completa_inner
                             )
                         ) as interior
@@ -1061,36 +1062,36 @@ FROM
                     re1.fin as fin,
                     re2.fin as fin2,
                     ST_AsText(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re1.ruta,
-                            ST_Line_Locate_Point(re1.ruta, %(puntoA)s),
-                            ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
+                            ST_LineLocatePoint(re1.ruta, %(puntoA)s),
+                            ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
                             )::Geography
                         ) as ruta_corta,
                     ST_AsText(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re2.ruta,
-                            ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
-                            ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                            ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
+                            ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                             )::Geography
                         ) as ruta_corta2,
                     ST_Length(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re1.ruta,
-                            ST_Line_Locate_Point(re1.ruta, %(puntoA)s),
-                            ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
+                            ST_LineLocatePoint(re1.ruta, %(puntoA)s),
+                            ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta))
                             )::Geography
                         ) as long_ruta,
                     ST_Length(
-                        ST_Line_Substring(
+                        ST_LineSubstring(
                             re2.ruta,
-                            ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
-                            ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                            ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta)),
+                            ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                             )::Geography
                         ) as long_ruta2,
-                    ST_Distance_Sphere(ST_GeomFromText(%(puntoA)s), re1.ruta) as long_pata,
-                    ST_Distance_Sphere(ST_GeomFromText(%(puntoB)s), re2.ruta) as long_pata2,
-                    ST_Distance_Sphere(re1.ruta, re2.ruta) as long_pata_transbordo
+                    ST_DistanceSphere(ST_GeomFromText(%(puntoA)s), re1.ruta) as long_pata,
+                    ST_DistanceSphere(ST_GeomFromText(%(puntoB)s), re2.ruta) as long_pata2,
+                    ST_DistanceSphere(re1.ruta, re2.ruta) as long_pata_transbordo
 
                 FROM
                     core_recorrido as re1
@@ -1104,13 +1105,13 @@ FROM
                     and
                         ST_DWithin(re1.ruta, re2.ruta, %(gap)s)
                     and
-                        ST_Line_Locate_Point(re1.ruta, %(puntoA)s)
+                        ST_LineLocatePoint(re1.ruta, %(puntoA)s)
                         <
-                        ST_Line_Locate_Point(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
+                        ST_LineLocatePoint(re1.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
                     and
-                        ST_Line_Locate_Point(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
+                        ST_LineLocatePoint(re2.ruta, ST_ClosestPoint(re1.ruta, re2.ruta) )
                         <
-                        ST_Line_Locate_Point(re2.ruta, %(puntoB)s)
+                        ST_LineLocatePoint(re2.ruta, %(puntoB)s)
                 ) as subquery
             ORDER BY (cast(long_pata+long_pata2+long_pata_transbordo as integer)*100 + ( cast(long_ruta as integer) + cast(long_ruta2 as integer) ) ) ASC
         ;"""
