@@ -11,5 +11,5 @@ router.register(r'geocoder', views.GeocoderViewSet, "geocoder")
 
 urlpatterns = [
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^', include(router.urls, namespace="api2")),
+    url(r'^', include(router.urls, namespace="api3")),
 ]

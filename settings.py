@@ -155,6 +155,7 @@ INSTALLED_APPS = (
 
     # Propias
     'apps.api2',
+    'apps.api3',
     'apps.catastro',
     'apps.core',
 )

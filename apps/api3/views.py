@@ -53,7 +53,7 @@ class RecorridosViewSet(LoggingMixin, viewsets.ModelViewSet):
 
             - `l=55.3324,-55.4433,200`
             - `l=55.3324,-55.4433,200|55.1112,-55.3334,300`
-            - [live example](/api/v2/recorridos/?l=-57.957258224487305,-34.92056351681724,200|-57.94755935668945,-34.92556010123052,200)
+            - [live example](/api//recorridos/?l=-57.957258224487305,-34.92056351681724,200|-57.94755935668945,-34.92556010123052,200)
 
          - `t` true/false: buscar con transbordo (true). `false` por defecto.
          - `q` string: para búsqueda por nombre de recorrido (fuzzy search)
@@ -171,8 +171,8 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
         Busca el valor del parámetro `q`
         usando varias fuentes según el formato del string de búsqueda
 
-         - **Geocoder** [Google] (ej: [12 1234](/api/v2/geocoder/?q=12%201234&c=la-plata) / [12 n 1234](/api/v2/geocoder/?q=12%20n%201234&c=la-plata) / [centenario 1234](/api/v2/geocoder/?q=centenario%20n%201234&c=la-plata))
-         - **Intersección de calles** [OSM] (ej: [12 y 62](/api/v2/geocoder/?q=12%20y%2062&c=la-plata) / perón y alvarez)
+         - **Geocoder** [Google] (ej: [12 1234](/api//geocoder/?q=12%201234&c=la-plata) / [12 n 1234](/api//geocoder/?q=12%20n%201234&c=la-plata) / [centenario 1234](/api//geocoder/?q=centenario%20n%201234&c=la-plata))
+         - **Intersección de calles** [OSM] (ej: [12 y 62](/api//geocoder/?q=12%20y%2062&c=la-plata) / perón y alvarez)
          - **POI (Point Of Interest)** [OSM y Cualbondi] (ej: plaza rocha / hospital)
          - **Zona (Barrio / Ciudad)** [Cualbondi] (ej: berisso / colegiales) (devuelve geocentro)
 
