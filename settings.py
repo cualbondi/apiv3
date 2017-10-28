@@ -245,3 +245,7 @@ DATABASES = {
 if CUALBONDI_ENV == 'development':
     DEBUG_TOOLBAR_PATCH_SETTINGS = False 
     INSTALLED_APPS += ('debug_toolbar', 'django_extensions')
+
+if CUALBONDI_ENV == 'production':
+    from settings_local import *
+    INSTALLED_APPS += LOCAL_INSTALLED_APPS
