@@ -29,7 +29,7 @@ USE_CACHE = os.environ.get('USE_CACHE', True)
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': 'cache',
+        'LOCATION': os.environ.get('MEMCACHED_HOST', '127.0.0.1:11211'),
     }
 }
 CACHE_TIMEOUT = os.environ.get('CACHE_TIMEOUT', 60*60)
