@@ -3,7 +3,7 @@ import json
 import urllib2
 from operator import itemgetter
 
-from django.db.models import get_model
+from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import GEOSGeometry
 
@@ -68,8 +68,8 @@ class PuntoBusquedaManager:
         #   elevar un 20% la precision si el token coincide con el slug de la ciudad (o zona) donde el punto cae
         #   caso contrario, disminuir en un 20% la precision de ese punto
 
-        ciudad_model = get_model("catastro", "Ciudad")
-        zona_model = get_model("catastro", "Zona")
+        ciudad_model = apps.get_model("catastro", "Ciudad")
+        zona_model = apps.get_model("catastro", "Zona")
         if query:
             
             res = self.poi_exact(query)
