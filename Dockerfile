@@ -2,6 +2,8 @@ FROM python:2
 
 MAINTAINER Cualbondi
 
+ENV PYTHONUNBUFFERED 1
+
 ENV APP_PATH=/app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
