@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from piston.resource import Resource
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.http import HttpResponse
 
 from apps.api.handlers import (CiudadHandler, CiudadLineaHandler,
@@ -33,7 +33,7 @@ calles_handler = Resource(CalleHandler, authentication=None)
 catastro_handler = Resource(CatastroHandler, authentication=None)
 posicion_handler = Resource(PosicionHandler, authentication=None)
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', api_welcome),
 
     url(r'^ciudades/$', ciudades_handler, { 'emitter_format': 'json' }),
@@ -52,7 +52,7 @@ urlpatterns = patterns('',
     url(r'^catastro/calles/$', calles_handler, { 'emitter_format': 'json' }),
 
     url(r'^posicion/(?P<id_recorrido>\d+)/$', posicion_handler, { 'emitter_format': 'json' }),
-)
+]
 
 
 """

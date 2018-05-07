@@ -4,7 +4,6 @@ import os
 CUALBONDI_ENV = os.environ.get('CUALBONDI_ENV', 'development')
 
 DEBUG = os.environ.get('DEBUG', False)
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', '*')]
 
@@ -104,11 +103,38 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '=tr&%05vw6&s4eoq)wdj(d&(56#cq@5k0b-c$^v6vr)#%e(c+&'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+TEMPLATES = [
+    {
+        # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
+        'DIRS': [
+            os.path.join(os.path.dirname(__file__),'templates'),
+        ],
+        'OPTIONS': {
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
+            'debug': DEBUG,
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
+            # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                # Your stuff: custom template context processors go here
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -116,18 +142,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-  'django.contrib.auth.context_processors.auth',
-)
-
 ROOT_URLCONF = 'urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(os.path.dirname(__file__),'templates'),
-)
 
 GOOGLE_API = "//maps.google.com/maps/api/js?v=3.6&sensor=false"
 
