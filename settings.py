@@ -178,10 +178,13 @@ INSTALLED_APPS = (
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('apps.api2.permissions.ReadOnly',),
     'PAGE_SIZE': 10,
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework_jsonp.renderers.JSONPRenderer',
-    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 }
+if CUALBONDI_ENV != 'development':
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
+        'rest_framework_jsonp.renderers.JSONPRenderer',
+    )
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
