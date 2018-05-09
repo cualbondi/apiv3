@@ -1,0 +1,5 @@
+[run]
+include = apiv3/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
