@@ -1,0 +1,14 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker --version
+  - docker-compose --version
+  - docker-compose -f docker-compose-travis.yml up -d
+  - docker-compose -f docker-compose-travis.yml exec apiv3 pip install codecov
+
+script:
+  - docker-compose -f docker-compose-travis.yml exec apiv3 coverage run manage.py test
+  - docker-compose -f docker-compose-travis.yml exec apiv3 codecov --token=b6277d39-a20a-4fb3-aca7-dc9107309651
