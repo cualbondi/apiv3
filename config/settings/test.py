@@ -8,7 +8,7 @@ from .base import env
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = False
+DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="Yta2lQQ3Sxp2ay0NQmCOVcd4c9qgCO490fjfMG4HXoYKKp7MUpxLuPqlZrSXCY64")
 # https://docs.djangoproject.com/en/dev/ref/settings/#test-runner

@@ -64,7 +64,7 @@ class RouterResultSerializer(serializers.Serializer):
                 "itinerario": [
                     {
                         "id": obj.id,
-                        "ruta_corta": geobuf.encode(obj.ruta_corta),
+                        "ruta_corta": base64.b64encode(geobuf.encode(json.loads(obj.ruta_corta_geojson))),
                         "long_bondi": obj.long_ruta,
                         "long_pata": obj.long_pata,
                         "color_polilinea": obj.color_polilinea,
@@ -78,7 +78,7 @@ class RouterResultSerializer(serializers.Serializer):
                     },
                     {
                         "id": obj.id2,
-                        "ruta_corta": geobuf.encode(obj.ruta_corta2),
+                        "ruta_corta": base64.b64encode(geobuf.encode(json.loads(obj.ruta_corta_geojson2))),
                         "long_bondi": obj.long_ruta2,
                         "long_pata": obj.long_pata2,
                         "color_polilinea": obj.color_polilinea2,
