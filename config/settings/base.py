@@ -39,9 +39,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///v3'),
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env.get_value("POSTGRES_DB"),
+        'USER': env.get_value("POSTGRES_USER"),
+        'PASSWORD': env.get_value("POSTGRES_PASSWORD"),
+        'HOST': env.get_value("DB_HOST"),
+        'PORT': '5432',
+    },
 }
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # URLS
