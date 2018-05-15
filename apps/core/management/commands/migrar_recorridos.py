@@ -2,11 +2,10 @@
 """Migra los datos de la BD colectivos a los nuevos modelos de django"""
 
 import psycopg2
-from psycopg2.extras import RealDictCursor
-
-from django.db import connection
-from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import BaseCommand
+from django.db import connection
+from psycopg2.extras import RealDictCursor
 
 from apps.catastro.models import Provincia, Ciudad
 from apps.core.models import Linea, Recorrido
@@ -117,4 +116,4 @@ class Command(BaseCommand):
                 recorrido.save()
                 stats['recorridos'] += 1
 
-        print "Se han agregado:", stats
+        print("Se han agregado:", stats)

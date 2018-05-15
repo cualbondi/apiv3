@@ -1,19 +1,19 @@
-# -*- coding: UTF-8 -*-
 import json
-import urllib2
 from operator import itemgetter
+from urllib.parse import quote
+from urllib.request import urlopen
 
-from django.apps import apps
-from django.contrib.gis.db import models
 from django.contrib.gis.geos import GEOSGeometry
-
 from django.db import connection
+from django.db.models import Manager as GeoManager
+
+from .apps import CatastroConfig
 
 
 def remove_multiple_strings(cur_string, replace_list):
-  for cur_word in replace_list:
-    cur_string = cur_string.replace(cur_word, '')
-  return cur_string
+    for cur_word in replace_list:
+        cur_string = cur_string.replace(cur_word, '')
+    return cur_string
 
 
 class PuntoBusquedaManager:
@@ -35,19 +35,21 @@ class PuntoBusquedaManager:
         "Returns all rows from a cursor as a dict"
         desc = cursor.description
         return [
-            dict(zip([col[0] for col in desc], row))
+            dict(list(zip([col[0] for col in desc], row)))
             for row in cursor.fetchall()
         ]
-    
-    def _objfetchall(self, cursor): 
-        "Returns all rows from a cursor as an object, but it's not editable (no setters)" 
-        desc = cursor.description 
+
+    def _objfetchall(self, cursor):
+        "Returns all rows from a cursor as an object, but it's not editable (no setters)"
+        desc = cursor.description
         l = []
+
         class Struct:
-            def __init__(self, **entries): 
+            def __init__(self, **entries):
                 self.__dict__.update(entries)
+
         for row in cursor.fetchall():
-            d=dict(zip([col[0] for col in desc], row))
+            d = dict(list(zip([col[0] for col in desc], row)))
             l.append(Struct(**d))
         return l
 
@@ -68,17 +70,18 @@ class PuntoBusquedaManager:
         #   elevar un 20% la precision si el token coincide con el slug de la ciudad (o zona) donde el punto cae
         #   caso contrario, disminuir en un 20% la precision de ese punto
 
-        ciudad_model = apps.get_model("catastro", "Ciudad")
-        zona_model = apps.get_model("catastro", "Zona")
+        # TODO: Test this change
+        ciudad_model = CatastroConfig.get_model("Ciudad")
+        zona_model = CatastroConfig.get_model("Zona")
         if query:
-            
+
             res = self.poi_exact(query)
             if res:
                 return res
 
             query = remove_multiple_strings(query.upper(), ['AV.', 'AVENIDA', 'CALLE', 'DIAGONAL', 'BOULEVARD'])
 
-            tokens = filter(None, map(unicode.strip, query.split(',')))
+            tokens = [_f for _f in map(str.strip, query.split(',')) if _f]
 
             if len(tokens) > 0:
                 calles = tokens[0].upper()[:]
@@ -112,7 +115,7 @@ class PuntoBusquedaManager:
 
             # ciudad actual, en la que esta el mapa, deberia ser pasada por parametro
             ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
-            
+
             if res:
                 res = [r for r in res if ciudad_actual.poligono.intersects(GEOSGeometry(r['geom']))]
             if not res:
@@ -130,7 +133,7 @@ class PuntoBusquedaManager:
             if not res:
                 res = []
                 for tok in tokens:
-                    res += self.rawGeocoder(tok+","+ciudad_actual.nombre)
+                    res += self.rawGeocoder(tok + "," + ciudad_actual.nombre)
                 if res:
                     res = [r for r in res if ciudad_actual.poligono.intersects(GEOSGeometry(r['geom']))]
 
@@ -149,7 +152,7 @@ class PuntoBusquedaManager:
                     areas += [GEOSGeometry(i.poligono) for i in ciudad_model.objects.fuzzy_like_query(token)]
                 except:
                     pass
-            
+
             if areas:
                 # para cada resultado aplicar la subida o bajada de puntaje segun el area en la que se encuentra
                 for r in res:
@@ -286,46 +289,47 @@ class PuntoBusquedaManager:
     def rawGeocoder(self, query):
         # http://stackoverflow.com/questions/9884475/using-google-maps-geocoder-from-python-with-urllib2
         add = query + ", Argentina"
-        add = urllib2.quote(add.encode('utf8'))
+        add = quote(add.encode('utf8'))
         geocode_url = "http://maps.googleapis.com/maps/api/geocode/json?language=es&address=%s&sensor=false" % add
-        req = urllib2.urlopen(geocode_url)
+        # TODO: Test this change
+        req = urlopen(geocode_url)
         res = json.loads(req.read())
         # comprehension para parsear lo devuelto por el google geocoder
         ret = [
-                {
-                    'nombre'   : i["formatted_address"],
-                    'precision': len(i["address_components"]) / 6,
-                    'geom'     : "POINT(" + str(i["geometry"]["location"]["lng"]) + " " + str(i["geometry"]["location"]["lat"]) + ")",
-                    'tipo'     : "rawGeocoder"
-                }
-                for i in res["results"]
-              ]
+            {
+                'nombre': i["formatted_address"],
+                'precision': len(i["address_components"]) / 6,
+                'geom': "POINT(" + str(i["geometry"]["location"]["lng"]) + " " + str(
+                    i["geometry"]["location"]["lat"]) + ")",
+                'tipo': "rawGeocoder"
+            }
+            for i in res["results"]
+        ]
         return ret
 
     def direccionPostal(self, calle, numero, ciudad_slug):
         # http://stackoverflow.com/questions/9884475/using-google-maps-geocoder-from-python-with-urllib2
-        import urllib2
-        import json
         add = calle + " " + numero + ", " + ciudad_slug + ", Argentina"
-        add = urllib2.quote(add.encode('utf8'))
+        add = quote(add.encode('utf8'))
         geocode_url = "http://maps.googleapis.com/maps/api/geocode/json?language=es&address=%s&sensor=false" % add
-        req = urllib2.urlopen(geocode_url)
+        req = urlopen(geocode_url)
         res = json.loads(req.read())
         # comprehension para parsear lo devuelto por el google geocoder
         ret = [
-                {
-                    'nombre'   : i["formatted_address"],
-                    'precision': 1,
-                    'geom'     : "POINT(" + str(i["geometry"]["location"]["lng"]) + " " + str(i["geometry"]["location"]["lat"]) + ")",
-                    'tipo'     : "direccionPostal"
-                }
-                for i in res["results"]
-                if "street_address" in i["types"]
-              ]
+            {
+                'nombre': i["formatted_address"],
+                'precision': 1,
+                'geom': "POINT(" + str(i["geometry"]["location"]["lng"]) + " " + str(
+                    i["geometry"]["location"]["lat"]) + ")",
+                'tipo': "direccionPostal"
+            }
+            for i in res["results"]
+            if "street_address" in i["types"]
+        ]
         return ret
 
 
-class ZonaManager(models.GeoManager):
+class ZonaManager(GeoManager):
     def fuzzy_like_query(self, q):
         params = {"q": q}
         query = """
@@ -348,7 +352,7 @@ class ZonaManager(models.GeoManager):
         return list(query_set)
 
 
-class CiudadManager(models.GeoManager):
+class CiudadManager(GeoManager):
     def fuzzy_like_query(self, q):
         params = {"q": q}
         query = """

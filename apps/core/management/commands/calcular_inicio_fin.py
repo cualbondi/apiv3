@@ -1,8 +1,8 @@
 import json
-import requests
 
-from django.db.models import Q, F
+import requests
 from django.core.management.base import BaseCommand
+from django.db.models import Q, F
 
 from apps.core.models import Recorrido
 
@@ -43,8 +43,8 @@ class Command(BaseCommand):
                 recorrido.save()
             except Exception as e:
                 self.stats['failed'] += 1
-                print "Skipped: {0}".format(e)
+                print("Skipped: {0}".format(e))
             else:
                 self.stats['succeed'] += 1
 
-        print "Done!", self.stats
+        print("Done!", self.stats)

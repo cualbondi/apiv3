@@ -1,6 +1,7 @@
+import logging
+
 from django.utils.timezone import now
 
-import logging
 logger = logging.getLogger('logstash')
 
 
@@ -10,6 +11,7 @@ class LoggingMixin(object):
         self.__logger_extras.update(dic)
 
     """Mixin to log requests"""
+
     def initial(self, request, *args, **kwargs):
 
         self.__logging_dict = {}
@@ -28,11 +30,11 @@ class LoggingMixin(object):
             "HTTP_REFERER",
             "SERVER_PROTOCOL"
         ]
-        for k, v in request.META.iteritems():
+        for k, v in request.META.items():
             if k in metas_allowed:
                 self.__logging_dict.update({'meta_{}'.format(k): v})
 
-        for k, v in request.query_params.iteritems():
+        for k, v in request.query_params.items():
             self.__logging_dict.update({'param_{}'.format(k): v})
 
         # regular intitial, including auth check
@@ -40,7 +42,7 @@ class LoggingMixin(object):
 
         # add user to log after auth
         user = request.user
-        if user.is_anonymous():
+        if user.is_anonymous:
             user = None
         else:
             user = user.username
@@ -52,7 +54,7 @@ class LoggingMixin(object):
         response = super(LoggingMixin, self).finalize_response(request, response, *args, **kwargs)
 
         # add logger extras
-        for k, v in self.__logger_extras.iteritems():
+        for k, v in self.__logger_extras.items():
             self.__logging_dict.update({'parsed_{}'.format(k): v})
 
         # compute response time

@@ -1,6 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+
 from apps.catastro.models import Ciudad, Provincia, ArgAdm1, ArgAdm2
-from pprint import pprint
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -15,7 +16,7 @@ class Command(BaseCommand):
             provincia.longitud_poligono = obj.shape_leng
             provincia.area_poligono = obj.shape_area
             provincia.save()
-            print provincia.nombre
+            print(provincia.nombre)
             # Recorrer para cada ciudad en ArgAdm2 dentro de esta provincia
             for obj2 in ArgAdm2.objects.filter(id_1=provincia.id):
                 ciudad = Ciudad()
@@ -27,5 +28,5 @@ class Command(BaseCommand):
                 ciudad.longitud_poligono = obj2.shape_leng
                 ciudad.area_poligono = obj2.shape_area
                 ciudad.save()
-                print '..' + ciudad.nombre
-            print
+                print('..' + ciudad.nombre)
+            print()

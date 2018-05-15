@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('catastro', '0001_initial'),
         ('core', '0001_initial'),
@@ -20,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ciudad',
             name='provincia',
-            field=models.ForeignKey(to='catastro.Provincia'),
+            field=models.ForeignKey(to='catastro.Provincia', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='ciudad',

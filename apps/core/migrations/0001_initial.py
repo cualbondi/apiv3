@@ -1,24 +1,43 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.db import migrations, models
 import django.contrib.gis.db.models.fields
+from django.db import migrations, models
+from django.contrib.postgres.operations import CreateExtension
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('catastro', '0001_initial'),
     ]
 
     operations = [
+        CreateExtension('postgis'),
+        CreateExtension('pg_trgm'),
+        migrations.RunSQL(
+            [("""
+                    CREATE OR REPLACE FUNCTION
+                        min_linestring ( "line1" Geometry, "line2" Geometry )
+                        RETURNS geometry
+                        AS $$
+                        BEGIN
+                            IF ST_Length2D_Spheroid(line1, 'SPHEROID["GRS_1980",6378137,298.257222101]') < ST_Length2D_Spheroid(line2, 'SPHEROID["GRS_1980",6378137,298.257222101]') THEN
+                                RETURN line1;
+                            ELSE
+                                RETURN line2;
+                            END IF;
+                        END;
+                        $$ LANGUAGE plpgsql;
+
+                    DROP AGGREGATE IF EXISTS min_path(Geometry);
+
+                    CREATE AGGREGATE min_path(Geometry)(SFUNC = min_linestring, STYPE = Geometry);
+        """, [])]
+        ),
         migrations.CreateModel(
             name='Comercio',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre', models.CharField(max_length=100)),
                 ('latlng', django.contrib.gis.db.models.fields.PointField(srid=4326)),
-                ('ciudad', models.ForeignKey(to='catastro.Ciudad')),
+                ('ciudad', models.ForeignKey(to='catastro.Ciudad', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -80,7 +99,7 @@ class Migration(migrations.Migration):
             name='Recorrido',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('uuid',  models.CharField(max_length=36)),
+                ('uuid', models.CharField(max_length=36)),
                 ('nombre', models.CharField(max_length=100)),
                 ('img_panorama', models.ImageField(max_length=200, null=True, upload_to=b'recorrido', blank=True)),
                 ('img_cuadrada', models.ImageField(max_length=200, null=True, upload_to=b'recorrido', blank=True)),
@@ -95,7 +114,7 @@ class Migration(migrations.Migration):
                 ('pois', models.TextField(null=True, blank=True)),
                 ('descripcion', models.TextField(null=True, blank=True)),
                 ('paradas_completas', models.BooleanField(default=False)),
-                ('linea', models.ForeignKey(to='core.Linea')),
+                ('linea', models.ForeignKey(to='core.Linea', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['linea__nombre', 'nombre'],
@@ -107,7 +126,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tipo', models.CharField(max_length=150)),
                 ('precio', models.DecimalField(max_digits=5, decimal_places=2)),
-                ('ciudad', models.ForeignKey(to='catastro.Ciudad')),
+                ('ciudad', models.ForeignKey(to='catastro.Ciudad', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -118,27 +137,27 @@ class Migration(migrations.Migration):
                 ('direccion', models.CharField(max_length=150)),
                 ('telefono', models.CharField(max_length=150)),
                 ('latlng', django.contrib.gis.db.models.fields.PointField(srid=4326)),
-                ('linea', models.ForeignKey(to='core.Linea')),
+                ('linea', models.ForeignKey(to='core.Linea', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='posicion',
             name='recorrido',
-            field=models.ForeignKey(to='core.Recorrido'),
+            field=models.ForeignKey(to='core.Recorrido', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='horario',
             name='parada',
-            field=models.ForeignKey(to='core.Parada'),
+            field=models.ForeignKey(to='core.Parada', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='horario',
             name='recorrido',
-            field=models.ForeignKey(to='core.Recorrido'),
+            field=models.ForeignKey(to='core.Recorrido', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='facebookpage',
             name='linea',
-            field=models.ForeignKey(to='core.Linea'),
+            field=models.ForeignKey(to='core.Linea', on_delete=models.CASCADE),
         ),
     ]

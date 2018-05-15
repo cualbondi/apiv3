@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.db import migrations, models
 import django.contrib.gis.db.models.fields
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
     ]
 
@@ -47,7 +43,7 @@ class Migration(migrations.Migration):
                 ('original', models.ImageField(upload_to=b'img/ciudades')),
                 ('titulo', models.CharField(max_length=100, null=True, blank=True)),
                 ('descripcion', models.TextField(null=True, blank=True)),
-                ('ciudad', models.ForeignKey(to='catastro.Ciudad')),
+                ('ciudad', models.ForeignKey(to='catastro.Ciudad', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(

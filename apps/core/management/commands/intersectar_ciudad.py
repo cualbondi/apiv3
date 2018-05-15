@@ -1,7 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
-from apps.core.models import Recorrido
+from django.core.management.base import BaseCommand
+
 from apps.catastro.models import Ciudad
-from pprint import pprint
+from apps.core.models import Recorrido
+
 
 class Command(BaseCommand):
 
@@ -20,8 +21,7 @@ class Command(BaseCommand):
                     stats[ciudad.id] += 1
                     ciudad.recorridos.add(recorrido)
                     ciudad.lineas.add(recorrido.linea)
-#            if len(ciudad.recorridos.all())>0:
-#                ciudad.activa=True
-#                ciudad.save()
-                print ciudad, stats[ciudad.id]
-
+                #            if len(ciudad.recorridos.all())>0:
+                #                ciudad.activa=True
+                #                ciudad.save()
+                print(ciudad, stats[ciudad.id])

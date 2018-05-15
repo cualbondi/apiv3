@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-# Copyright 2013-2014, Cualbondi
-
 import json
+
+from django.core.management.base import BaseCommand
 
 from apps.catastro.models import Ciudad
 from apps.core.models import Linea, Recorrido
-from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -45,14 +43,14 @@ class Command(BaseCommand):
                 linea = Linea.objects.get(
                     nombre=recorrido["linea"], ciudad=tucuman)
             except Linea.DoesNotExist:
-                print u"Creando linea '{0}'...".format(recorrido["linea"])
+                print("Creando linea '{0}'...".format(recorrido["linea"]))
                 linea = Linea(nombre=recorrido["linea"])
                 linea.save()
                 tucuman.lineas.add(linea)
                 stats["lineas"] += 1
 
-            print u"Creando recorrido '{0}' de linea '{1}'...".format(
-                recorrido["nombre"], recorrido["linea"])
+            print("Creando recorrido '{0}' de linea '{1}'...".format(
+                recorrido["nombre"], recorrido["linea"]))
             try:
                 Recorrido.objects.get(
                     nombre=recorrido["nombre"],
@@ -73,4 +71,4 @@ class Command(BaseCommand):
                 tucuman.recorridos.add(recorrido)
                 stats["recorridos"] += 1
 
-        print stats
+        print(stats)

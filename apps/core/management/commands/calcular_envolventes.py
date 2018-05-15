@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
+
 from apps.catastro.models import Ciudad
 from apps.core.models import Recorrido, Linea
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        print "Calculando envolventes para ciudades..."
+        print("Calculando envolventes para ciudades...")
         ciudades = Ciudad.objects.all()
         query = """
             SELECT
@@ -22,17 +23,17 @@ class Command(BaseCommand):
             ;
         """
         for ciudad in ciudades:
-            print "Procesando ciudad:", ciudad.nombre
+            print("Procesando ciudad:", ciudad.nombre)
             params = {"id_ciudad": int(ciudad.id)}
             envolvente = Recorrido.objects.raw(query, params)[0].wkt
             ciudad.envolvente = envolvente
             try:
                 ciudad.save()
             except TypeError:
-                print "no se pudo asignar envolvente:", ciudad.nombre
+                print("no se pudo asignar envolvente:", ciudad.nombre)
 
         print
-        print "Calculando envolventes para lineas..."
+        print("Calculando envolventes para lineas...")
         lineas = Linea.objects.all()
         query = """
             SELECT
@@ -48,7 +49,7 @@ class Command(BaseCommand):
             ;
         """
         for linea in lineas:
-            print "Procesando:", linea.nombre
+            print("Procesando:", linea.nombre)
             params = {"id_li": int(linea.id)}
             try:
                 envolvente = Recorrido.objects.raw(query, params)[0].wkt
@@ -58,4 +59,4 @@ class Command(BaseCommand):
             try:
                 linea.save()
             except TypeError:
-                print "No se pudo asignar envolvente:", linea.nombre, linea.ciudad_set.all()
+                print("No se pudo asignar envolvente:", linea.nombre, linea.ciudad_set.all())
