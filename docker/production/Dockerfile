@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
   && pip install uwsgi
 
-RUN addgroup -S django \
-    && adduser -S -G django django
+RUN groupadd django \
+    && useradd django -s /bin/bash -m -g django -G django
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -38,4 +38,4 @@ WORKDIR /app
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 5000
+EXPOSE 8000
