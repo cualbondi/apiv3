@@ -9,7 +9,6 @@ services:
         depends_on:
             - db
             - cache
-        restart: unless-stopped
         env_file: .env.local.travis
         volumes:
             - .:/app
@@ -17,9 +16,7 @@ services:
 
     db:
         image: cualbondi/postgres
-        restart: unless-stopped
         env_file: .env.local.travis
 
     cache:
         image: memcached:alpine
-        restart: unless-stopped
