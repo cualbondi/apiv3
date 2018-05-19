@@ -7,7 +7,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.db import connection
 from django.db.models import Manager as GeoManager
 
-from .apps import CatastroConfig
+from django.apps import apps
 
 
 def remove_multiple_strings(cur_string, replace_list):
@@ -70,9 +70,8 @@ class PuntoBusquedaManager:
         #   elevar un 20% la precision si el token coincide con el slug de la ciudad (o zona) donde el punto cae
         #   caso contrario, disminuir en un 20% la precision de ese punto
 
-        # TODO: Test this change
-        ciudad_model = CatastroConfig.get_model("Ciudad")
-        zona_model = CatastroConfig.get_model("Zona")
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        zona_model = apps.get_app_config('catastro').get_model("Zona")
         if query:
 
             res = self.poi_exact(query)

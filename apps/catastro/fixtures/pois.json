@@ -1,0 +1,122 @@
+[
+  {
+    "fields": {
+      "nom": "INIFTA - UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9252504697253201 -34.9125625618138642)",
+      "slug": "inifta-unlp-casco-urbano",
+      "nom_normal": "INIFTA - UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 59980
+  },
+  {
+    "fields": {
+      "nom": "Facultad Periodismo y comunicación Social | UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9265179197565203 -34.9122206879760029)",
+      "slug": "facultad-periodismo-y-comunicacion-social-unlp-casco-urbano",
+      "nom_normal": "FACULTAD PERIODISMO Y COMUNICACION SOCIAL | UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 59982
+  },
+  {
+    "fields": {
+      "nom": "Facultad de Ciencias Veterinaria - UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9296719625601710 -34.9119794543000594)",
+      "slug": "facultad-de-ciencias-veterinaria-unlp-casco-urbano",
+      "nom_normal": "FACULTAD DE CIENCIAS VETERINARIA - UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 59986
+  },
+  {
+    "fields": {
+      "nom": "Facultad de Informática - UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9381343800983899 -34.9036558170192848)",
+      "slug": "facultad-de-informatica-unlp-casco-urbano",
+      "nom_normal": "FACULTAD DE INFORMATICA - UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60130
+  },
+  {
+    "fields": {
+      "nom": "Campo de Deportes de la UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9404510926245351 -34.9051450530303171)",
+      "slug": "campo-de-deportes-de-la-unlp-casco-urbano",
+      "nom_normal": "CAMPO DE DEPORTES DE LA UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60131
+  },
+  {
+    "fields": {
+      "nom": "Departamento de Agrimensura, FI, UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9435441362107824 -34.9057011922849867)",
+      "slug": "departamento-de-agrimensura-fi-unlp-casco-urbano",
+      "nom_normal": "DEPARTAMENTO DE AGRIMENSURA, FI, UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60132
+  },
+  {
+    "fields": {
+      "nom": "Comedor Universitario - UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9418429370037842 -34.9070641966920263)",
+      "slug": "comedor-universitario-unlp-casco-urbano",
+      "nom_normal": "COMEDOR UNIVERSITARIO - UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60289
+  },
+  {
+    "fields": {
+      "nom": "Departamento de Mecanica y Electrotecnia - Facultad de Ingenieria UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9427164302266391 -34.9067693715386369)",
+      "slug": "departamento-de-mecanica-y-electrotecnia-facultad-de-ingenieria-unlp-casco-urbano",
+      "nom_normal": "DEPARTAMENTO DE MECANICA Y ELECTROTECNIA - FACULTAD DE INGENIERIA UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60290
+  },
+  {
+    "fields": {
+      "nom": "UNLP - Facultad de Ciencias Exactas, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9434330388174814 -34.9073879175842237)",
+      "slug": "unlp-facultad-de-ciencias-exactas-casco-urbano",
+      "nom_normal": "UNLP - FACULTAD DE CIENCIAS EXACTAS"
+    },
+    "model": "catastro.poi",
+    "pk": 60297
+  },
+  {
+    "fields": {
+      "nom": "Colegio Nacional \"Rafael Hernández\" - UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9436909530403668 -34.9082340835744986)",
+      "slug": "colegio-nacional-rafael-hernandez-unlp-casco-urbano",
+      "nom_normal": "COLEGIO NACIONAL \"RAFAEL HERNANDEZ\" - UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60300
+  },
+  {
+    "fields": {
+      "nom": "Taller de Teatro UNLP, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9497510000000133 -34.9197192999999970)",
+      "slug": "taller-de-teatro-unlp-casco-urbano",
+      "nom_normal": "TALLER DE TEATRO UNLP"
+    },
+    "model": "catastro.poi",
+    "pk": 60365
+  },
+  {
+    "fields": {
+      "nom": "UNLP Facultad de Bellas Artes, Casco Urbano",
+      "latlng": "SRID=4326;POINT (-57.9412304976331001 -34.9219856834230171)",
+      "slug": "unlp-facultad-de-bellas-artes-casco-urbano",
+      "nom_normal": "UNLP FACULTAD DE BELLAS ARTES"
+    },
+    "model": "catastro.poi",
+    "pk": 60455
+  }
+]

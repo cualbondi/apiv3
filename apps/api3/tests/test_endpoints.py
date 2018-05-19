@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from apps.catastro.models import Provincia, Ciudad
 
 
-class TestEndpoints(APITestCase):
+class TestRecorridos(APITestCase):
 
     fixtures = ['lineas.json', 'recorridos.json', 'provincias.json', 'ciudades.json']
 
@@ -81,3 +81,22 @@ class TestEndpoints(APITestCase):
 
     def test_recorrido_con_trasbordo_129_202(self):
         self.assert_recorrido_con_trasbordo("?l=-58.137073516845696%2C-34.85156550582556%2C800%7C-57.88455963134766%2C-34.86452465161482%2C800&c=la-plata&page=1&t=true", "129 (plaza) 1", "202 Fx1")
+
+
+class TestGeocoder(APITestCase):
+
+    fixtures = ['lineas.json', 'recorridos.json', 'provincias.json', 'ciudades.json', 'calles.json', 'zonas.json', 'pois.json']
+
+    def test_interseccion(self):
+        """ Should return one intersection """
+        response = self.client.get(
+            '/api/v3/geocoder/?q=12 y 62&c=la-plata')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_poi(self):
+        """ Should return one poi """
+        response = self.client.get(
+            '/api/v3/geocoder/?q=INIFTA - UNLP&c=la-plata')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
