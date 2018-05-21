@@ -41,20 +41,20 @@ class RecorridoManager(GeoManager):
             FROM
             (
                 SELECT *,
-                ST_AsText(
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re1_ruta,
                         ST_LineLocatePoint(re1_ruta, ll11),
                         ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
-                    ) as ruta_corta,
-                ST_AsText(
+                    ), 'base64') as ruta_corta,
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re2_ruta,
                         ST_LineLocatePoint(re2_ruta, ll21),
                         ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
-                    ) as ruta_corta2,
+                    ), 'base64') as ruta_corta2,
                 ST_Length(
                     ST_LineSubstring(
                         re1_ruta,
@@ -133,20 +133,20 @@ class RecorridoManager(GeoManager):
 
             UNION
             SELECT *,
-                ST_AsText(
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re1_ruta,
                         ST_LineLocatePoint(re1_ruta, ll11),
                         ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
-                    ) as ruta_corta,
-                ST_AsText(
+                    ), 'base64') as ruta_corta,
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re2_ruta,
                         ST_LineLocatePoint(re2_ruta, ll21),
                         ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
-                    ) as ruta_corta2,
+                    ), 'base64') as ruta_corta2,
                 ST_Length(
                     ST_LineSubstring(
                         re1_ruta,
@@ -226,20 +226,20 @@ class RecorridoManager(GeoManager):
                 )
             UNION
             SELECT *,
-                ST_AsText(
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re1_ruta,
                         ST_LineLocatePoint(re1_ruta, ll11),
                         ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
-                    ) as ruta_corta,
-                ST_AsText(
+                    ), 'base64') as ruta_corta,
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re2_ruta,
                         ST_LineLocatePoint(re2_ruta, ll21),
                         ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
-                    ) as ruta_corta2,
+                    ), 'base64') as ruta_corta2,
                 ST_Length(
                     ST_LineSubstring(
                         re1_ruta,
@@ -319,20 +319,20 @@ class RecorridoManager(GeoManager):
                 )
             UNION
             SELECT *,
-                ST_AsText(
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re1_ruta,
                         ST_LineLocatePoint(re1_ruta, ll11),
                         ST_LineLocatePoint(re1_ruta, ll12)
                         )::Geography
-                    ) as ruta_corta,
-                ST_AsText(
+                    ), 'base64') as ruta_corta,
+                encode(ST_AsGeobuf(
                     ST_LineSubstring(
                         re2_ruta,
                         ST_LineLocatePoint(re2_ruta, ll21),
                         ST_LineLocatePoint(re2_ruta, ll22)
                         )::Geography
-                    ) as ruta_corta2,
+                    ), 'base64') as ruta_corta2,
                 ST_Length(
                     ST_LineSubstring(
                         re1_ruta,
@@ -453,8 +453,7 @@ SELECT
   li.slug as lineaslug,
   inicio,
   fin,
-  ST_AsText(ruta) as ruta_corta,
-  ST_AsGeoJSON(ruta) as ruta_corta_geojson,
+  encode(ST_AsGeobuf(re, 'ruta'), 'base64') as ruta_corta,
   round(long_ruta::numeric, 2) as long_ruta,
   round(long_pata::numeric, 2) as long_pata,
   coalesce(re.color_polilinea, li.color_polilinea, '#000') as color_polilinea,
@@ -573,8 +572,23 @@ FROM
       min_d1 = d1 and min_d2 = d2
     )
   ) as re on li.id = re.linea_id
+  GROUP BY
+      re.id,
+      li.nombre || ' ' || re.nombre,
+      linea_id,
+      re.slug,
+      li.slug,
+      inicio,
+      fin,
+      long_ruta,
+      long_pata,
+      coalesce(re.color_polilinea, li.color_polilinea, '#000'),
+      coalesce(li.foto, 'default'),
+      p1,
+      p2
   ORDER BY
     long_pata*10 + long_ruta asc
+
             ;"""
         query_set = self.raw(query, params)
         return list(query_set)
@@ -744,8 +758,8 @@ FROM
                 inicio2,
                 fin,
                 fin2,
-                ST_AsText(ruta_corta) as ruta_corta,
-                ST_AsText(ruta_corta2) as ruta_corta2,
+                encode(ST_AsGeobuf(ruta_corta), 'base64') as ruta_corta,
+                encode(ST_AsGeobuf(ruta_corta2), 'base64') as ruta_corta2,
                 long_ruta,
                 long_ruta2,
                 long_pata,
@@ -1051,9 +1065,7 @@ FROM
                 fin,
                 fin2,
                 ST_AsText(ruta_corta) as ruta_corta,
-                ST_AsGeoJSON(ruta_corta) as ruta_corta_geojson,
                 ST_AsText(ruta_corta2) as ruta_corta2,
-                ST_AsGeoJSON(ruta_corta2) as ruta_corta_geojson2,
                 long_ruta,
                 long_ruta2,
                 long_pata,

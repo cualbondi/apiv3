@@ -14,6 +14,7 @@ class TestRecorridos(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         result = response.data["results"][0]
+        print(response.data["results"][0]["itinerario"][0]["ruta_corta"])
         self.assertEqual(result["itinerario"][0]["nombre"], nombre)
 
     def assert_recorrido_con_trasbordo(self, qstring, linea1, linea2):

@@ -1,8 +1,6 @@
-import base64
 import json
 from copy import copy
 
-import geobuf
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
@@ -44,7 +42,7 @@ class RouterResultSerializer(serializers.Serializer):
                 "itinerario": [
                     {
                         "id": obj.id,
-                        "ruta_corta": base64.b64encode(geobuf.encode(json.loads(obj.ruta_corta_geojson))),
+                        "ruta_corta": obj.ruta_corta,
                         "long_bondi": obj.long_ruta,
                         "long_pata": obj.long_pata,
                         "color_polilinea": obj.color_polilinea,
@@ -64,7 +62,7 @@ class RouterResultSerializer(serializers.Serializer):
                 "itinerario": [
                     {
                         "id": obj.id,
-                        "ruta_corta": base64.b64encode(geobuf.encode(json.loads(obj.ruta_corta_geojson))),
+                        "ruta_corta": obj.ruta_corta,
                         "long_bondi": obj.long_ruta,
                         "long_pata": obj.long_pata,
                         "color_polilinea": obj.color_polilinea,
@@ -78,7 +76,7 @@ class RouterResultSerializer(serializers.Serializer):
                     },
                     {
                         "id": obj.id2,
-                        "ruta_corta": base64.b64encode(geobuf.encode(json.loads(obj.ruta_corta_geojson2))),
+                        "ruta_corta": obj.ruta_corta2,
                         "long_bondi": obj.long_ruta2,
                         "long_pata": obj.long_pata2,
                         "color_polilinea": obj.color_polilinea2,
