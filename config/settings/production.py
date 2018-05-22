@@ -127,6 +127,17 @@ LOGGING = {
         }
     }
 }
+
+
+# django-cors-headers
+# ------------------------------------------------------------------------------
+# https://github.com/ottoyiu/django-cors-headers/#configuration
+CORS_ORIGIN_WHITELIST = (
+    'cualbondi.com.ar',
+)
+
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 
