@@ -14,6 +14,8 @@ ALLOWED_HOSTS = [
     "localhost:8081",
     "0.0.0.0",
     "127.0.0.1",
+    "apiv3:8000",
+    "apiv3",
 ]
 
 # CACHES
@@ -66,10 +68,7 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 # django-cors-headers
 # ------------------------------------------------------------------------------
 # https://github.com/ottoyiu/django-cors-headers/#configuration
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8083',
-)
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Your stuff...
 # ------------------------------------------------------------------------------
