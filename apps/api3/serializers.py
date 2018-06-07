@@ -100,7 +100,7 @@ def getParada(parada_id):
     else:
         p = Parada.objects.get(pk=parada_id)
         return {
-            "latlng": p.latlng.geojson,
+            "latlng": p.latlng.coords[::-1],
             "codigo": p.codigo,
             "nombre": p.nombre
         }
