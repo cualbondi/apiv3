@@ -14,3 +14,5 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 django-imagekit==4.0.2 # https://github.com/matthewwithanm/django-imagekit
 geobuf==1.1.1 # https://github.com/pygeobuf/pygeobuf
 django-cors-headers==2.2.0 # https://github.com/ottoyiu/django-cors-headers
+
+django-leaflet==0.24.0 # https://github.com/makinacorpus/django-leaflet

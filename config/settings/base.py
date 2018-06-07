@@ -73,6 +73,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
+    'leaflet',
 ]
 LOCAL_APPS = [
     'apps.core.apps.CoreConfig',
