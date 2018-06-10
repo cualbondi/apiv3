@@ -3,12 +3,14 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
+from rest_framework.documentation import include_docs_urls
+
 from apps.api3.urls import urlpatterns as v3urls
 
 urlpatterns = [
     # admin
     url(settings.ADMIN_URL, admin.site.urls),
-
+    url(r'^docs/', include_docs_urls(title='Cualbondi API v3')),
     url(r"^", include(v3urls)),
     url(r'^api/', include(v3urls)),
     # TODO: remove this legacy endpoint once web has been updated

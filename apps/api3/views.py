@@ -183,7 +183,8 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
         pero no restringe la búsqueda a esa ciudad (sólo altera la precisión)
     """
     serializer_class = serializers.GeocoderSerializer
-
+    queryset = ''
+    
     def list(self, request):
         q = request.query_params.get('q', None)
         c = request.query_params.get('c', None)
