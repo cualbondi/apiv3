@@ -72,45 +72,45 @@ class PuntoBusquedaManager:
 
         ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
         zona_model = apps.get_app_config('catastro').get_model("Zona")
+        tokens = [_f for _f in map(str.strip, query.split(',')) if _f]
         if query:
 
             res = self.poi_exact(query)
-            if res:
-                return res
+            if not res:
 
-            query = remove_multiple_strings(query.upper(), ['AV.', 'AVENIDA', 'CALLE', 'DIAGONAL', 'BOULEVARD'])
+                query = remove_multiple_strings(query.upper(), ['AV.', 'AVENIDA', 'CALLE', 'DIAGONAL', 'BOULEVARD'])
 
-            tokens = [_f for _f in map(str.strip, query.split(',')) if _f]
+                tokens = [_f for _f in map(str.strip, query.split(',')) if _f]
 
-            if len(tokens) > 0:
-                calles = tokens[0].upper()[:]
-            else:
-                return []
-
-            separators = ['Y', 'ESQ', 'ESQ.', 'ESQUINA', 'ESQUINA.', 'INTERSECCION', 'CON', 'CRUCE']
-            for sep in separators:
-                calles = calles.replace(' ' + sep + ' ', '@')
-            calles = calles.split('@')
-
-            if len(calles) == 2:
-                res = self.interseccion(calles[0].strip(), calles[1].strip())
-            else:
-
-                direccion = tokens[0].upper()[:]
-                separators = ['N', 'NUM', 'NUM.', 'NRO', 'NUMERO', 'NUMERO.', 'NO', 'NO.']
-                for sep in separators:
-                    direccion = direccion.replace(' ' + sep + ' ', '@')
-                direccion = direccion.split('@')
-
-                if len(direccion) == 2:
-                    res = self.direccionPostal(direccion[0].strip(), direccion[1].strip(), ciudad_actual_slug)
+                if len(tokens) > 0:
+                    calles = tokens[0].upper()[:]
                 else:
-                    # worst case (ordenar por precision?)
-                    res = []
-                    for tok in tokens:
-                        # PROBLEMA! estos devuelven diccionarios que se acceden asi: punto['item']
-                        # PROBLEMA! pero los otros devuelven objetos que se acceden asi punto.attr
-                        res += self.poi(tok) + self.zona(tok)
+                    return []
+
+                separators = ['Y', 'ESQ', 'ESQ.', 'ESQUINA', 'ESQUINA.', 'INTERSECCION', 'CON', 'CRUCE']
+                for sep in separators:
+                    calles = calles.replace(' ' + sep + ' ', '@')
+                calles = calles.split('@')
+
+                if len(calles) == 2:
+                    res = self.interseccion(calles[0].strip(), calles[1].strip())
+                else:
+
+                    direccion = tokens[0].upper()[:]
+                    separators = ['N', 'NUM', 'NUM.', 'NRO', 'NUMERO', 'NUMERO.', 'NO', 'NO.']
+                    for sep in separators:
+                        direccion = direccion.replace(' ' + sep + ' ', '@')
+                    direccion = direccion.split('@')
+
+                    if len(direccion) == 2:
+                        res = self.direccionPostal(direccion[0].strip(), direccion[1].strip(), ciudad_actual_slug)
+                    else:
+                        # worst case (ordenar por precision?)
+                        res = []
+                        for tok in tokens:
+                            # PROBLEMA! estos devuelven diccionarios que se acceden asi: punto['item']
+                            # PROBLEMA! pero los otros devuelven objetos que se acceden asi punto.attr
+                            res += self.poi(tok) + self.zona(tok)
 
             # ciudad actual, en la que esta el mapa, deberia ser pasada por parametro
             ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
