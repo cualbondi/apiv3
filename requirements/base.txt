@@ -5,7 +5,7 @@ argon2-cffi==18.1.0  # https://github.com/hynek/argon2_cffi
 # Django
 # ------------------------------------------------------------------------------
 django==2.0.6  # pyup: < 2.1  # https://www.djangoproject.com/
-django-environ==0.4.4  # https://github.com/joke2k/django-environ
+django-environ==0.4.5  # https://github.com/joke2k/django-environ
 
 # Django REST Framework
 djangorestframework==3.8.2  # https://github.com/encode/django-rest-framework
