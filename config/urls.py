@@ -22,6 +22,9 @@ urlpatterns = [
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
 
+if hasattr(settings, 'SILK') and settings.SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
 if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar

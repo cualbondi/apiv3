@@ -64,5 +64,10 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 # https://github.com/ottoyiu/django-cors-headers/#configuration
 CORS_ORIGIN_ALLOW_ALL = True
 
-# Your stuff...
-# ------------------------------------------------------------------------------
+SILK = True
+if SILK:
+    INSTALLED_APPS += ['silk']  # noqa F405
+    MIDDLEWARE += ['silk.middleware.SilkyMiddleware']  # noqa F405
+    SILKY_PYTHON_PROFILER = True
+    SILKY_PYTHON_PROFILER_BINARY = True
+    SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
