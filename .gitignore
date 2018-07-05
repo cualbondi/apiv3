@@ -278,3 +278,6 @@ apiv3/media/
 .env
 .envs/*
 !.envs/.local/
+
+# pbf osm data
+osm/*.pbf
