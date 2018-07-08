@@ -7,7 +7,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
 from apps.catastro.models import Ciudad
-from apps.core.models import Linea, Parada
+from apps.core.models import Linea, Parada, Recorrido
 
 
 class CiudadSerializer(serializers.ModelSerializer):
@@ -126,6 +126,34 @@ class RecorridoSerializer(serializers.Serializer):
             'foto': obj.foto,
             # 'url': obj.get_absolute_url(None, None, obj.slug),
         }
+
+class RecorridoCustomSerializer(serializers.Serializer):
+
+    def to_representation(self, obj):
+        print(obj.__dict__)
+        return {
+            'id': obj.id,
+            'linea_nombre': obj.linea_nombre,
+            'recorrido_nombre': obj.recorrido_nombre,
+            'osm_name': obj.osm_name,
+            'linea_id': obj.linea_id,
+            'recorrido_id': obj.recorrido_id,
+            'osm_id': obj.osm_id,
+            'ruta': obj.ruta,
+        }
+
+class LineaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Linea
+        fields = ('id', 'nombre')
+
+class RecorridoModelSerializer(serializers.ModelSerializer):
+    linea = LineaSerializer()
+
+    class Meta:
+        model = Recorrido
+        fields = ('id', 'nombre', 'linea')
 
 
 class GeocoderSerializer(serializers.Serializer):

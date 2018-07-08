@@ -1,10 +1,12 @@
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
 from rest_framework import exceptions
 from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from apps.catastro.models import Ciudad
 from apps.catastro.models import PuntoBusqueda
@@ -184,7 +186,7 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
     """
     serializer_class = serializers.GeocoderSerializer
     queryset = ''
-    
+
     def list(self, request):
         q = request.query_params.get('q', None)
         c = request.query_params.get('c', None)
@@ -209,3 +211,51 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
                     "count": 0
                 })
                 return Response([])
+
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+
+class RecorridosPorCiudad(viewsets.ModelViewSet):
+    serializer_class = serializers.RecorridoModelSerializer
+    # pagination_class = pagination.PageNumberPagination
+    depth = 1
+    def get_queryset(self):
+        return Recorrido.objects.select_related('linea').filter(ciudad=self.kwargs.get('ciudad_id'))
+
+@api_view(['GET'])
+def match_recorridos(request, recorrido_id):
+    # return Response(recorrido_id)
+    with connection.cursor() as cursor:
+        query = """
+            select
+            ST_Area(
+                ST_SymDifference(
+                ruta_buffer_40_simplify::geometry,
+                way_buffer_40_simplify::geometry
+                )
+            ) as area,
+            *
+            from
+            (select * from crossed1 where recorrido_id = %(recorrido_id)s) as c
+            order by 1 asc;
+        """
+        opts = {"recorrido_id": recorrido_id}
+        cursor.execute(query, opts)
+        # return Response(recorrido_id)
+
+        response = dictfetchall(cursor)
+    return Response(response)
+
+@api_view(['POST'])
+def set_osm_pair(request):
+    pass
+
+
+@api_view(['GET'])
+def display_recorridos(request):
+    pass
