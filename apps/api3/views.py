@@ -233,16 +233,10 @@ def match_recorridos(request, recorrido_id):
     with connection.cursor() as cursor:
         query = """
             select
-            ST_Area(
-                ST_SymDifference(
-                ruta_buffer_40_simplify::geometry,
-                way_buffer_40_simplify::geometry
-                )
-            ) as area,
             *
             from
-            (select * from crossed1 where recorrido_id = %(recorrido_id)s) as c
-            order by 1 asc;
+            (select * from crossed2_table where recorrido_id = %(recorrido_id)s) as c
+            order by area asc;
         """
         opts = {"recorrido_id": recorrido_id}
         cursor.execute(query, opts)
