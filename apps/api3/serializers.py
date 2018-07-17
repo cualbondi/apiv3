@@ -106,26 +106,32 @@ def getParada(parada_id):
         }
 
 
-class RecorridoSerializer(serializers.Serializer):
+class RecorridoPureModelSerializer(serializers.ModelSerializer):
 
-    def to_representation(self, obj):
-        ruta = copy(obj.ruta)
-        ruta.transform(3857)
-        length = ruta.length
-        return {
-            'id': obj.id,
-            'nombre': obj.nombre,
-            'nombre_linea': obj.linea.nombre,
-            'color_polilinea': obj.color_polilinea,
-            'sentido': obj.sentido,
-            'descripcion': obj.descripcion,
-            'inicio': obj.inicio,
-            'fin': obj.fin,
-            'ruta': obj.ruta.wkt,
-            'long_ruta': length,
-            'foto': obj.foto,
-            # 'url': obj.get_absolute_url(None, None, obj.slug),
-        }
+    class Meta:
+        model = Recorrido
+        fields = '__all__'
+
+# class RecorridoSerializer(serializers.Serializer):
+
+#     def to_representation(self, obj):
+#         ruta = copy(obj.ruta)
+#         ruta.transform(3857)
+#         length = ruta.length
+#         return {
+#             'id': obj.id,
+#             'nombre': obj.nombre,
+#             'nombre_linea': obj.linea.nombre,
+#             'color_polilinea': obj.color_polilinea,
+#             'sentido': obj.sentido,
+#             'descripcion': obj.descripcion,
+#             'inicio': obj.inicio,
+#             'fin': obj.fin,
+#             'ruta': obj.ruta.wkt,
+#             'long_ruta': length,
+#             'foto': obj.foto if hasattr(obj, 'foto') else '',
+#             # 'url': obj.get_absolute_url(None, None, obj.slug),
+#         }
 
 class RecorridoCustomSerializer(serializers.Serializer):
 

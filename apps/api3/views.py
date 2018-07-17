@@ -57,7 +57,7 @@ class RecorridosViewSet(LoggingMixin, viewsets.ModelViewSet):
          - `c` string: ciudad-slug, requerido cuando se usa `q`
     """
 
-    serializer_class = serializers.RecorridoSerializer
+    serializer_class = serializers.RecorridoPureModelSerializer
     queryset = Recorrido.objects.all()
     pagination_class = CBPagination
 

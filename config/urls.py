@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^v2/', include(v3urls)),
     url(r'^api/v3/', include(v3urls)),
     # url(r'^widget/', include('apps.widget.urls')),
-
+    url(r'^auth/', include('rest_framework_social_oauth2.urls'))
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )

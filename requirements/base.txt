@@ -16,3 +16,5 @@ geobuf==1.1.1 # https://github.com/pygeobuf/pygeobuf
 django-cors-headers==2.3.0 # https://github.com/ottoyiu/django-cors-headers
 
 django-leaflet==0.24.0 # https://github.com/makinacorpus/django-leaflet
+
+django-rest-framework-social-oauth2==1.1.0 # https://github.com/RealmTeam/django-rest-framework-social-oauth2
