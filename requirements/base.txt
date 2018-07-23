@@ -16,3 +16,5 @@ geobuf==1.1.1 # https://github.com/pygeobuf/pygeobuf
 django-cors-headers==2.3.0 # https://github.com/ottoyiu/django-cors-headers
 
 django-leaflet==0.24.0 # https://github.com/makinacorpus/django-leaflet
+
+geopy==1.15.0 # https://github.com/geopy/geopy

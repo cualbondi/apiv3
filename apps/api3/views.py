@@ -194,7 +194,46 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
             )
         else:
             try:
-                res = PuntoBusqueda.objects.buscar(q, c)
+                res = PuntoBusqueda.objects.buscar_arcgis(q, c)
+                self.update_logger_extras({
+                    "q": q,
+                    "c": c,
+                    "count": len(res)
+                })
+                ser = self.get_serializer(res, many=True)
+                return Response(ser.data)
+            except ObjectDoesNotExist:
+                self.update_logger_extras({
+                    "q": q,
+                    "c": c,
+                    "count": 0
+                })
+                return Response([])
+
+
+class GeocoderSuggestViewSet(LoggingMixin, viewsets.GenericViewSet):
+    """
+        Parámetros querystring
+
+         - `q` obligatorio: string a geobuscar
+         - `c` opcional: slug de la ciudad donde buscar
+
+        Busca el valor del parámetro `q`
+        usando Arcgis Suggest
+    """
+    serializer_class = serializers.GeocoderSuggestSerializer
+    queryset = ''
+
+    def list(self, request):
+        q = request.query_params.get('q', None)
+        c = request.query_params.get('c', None)
+        if q is None:
+            raise exceptions.ValidationError(
+                {'detail': 'expected \'q\' parameter'}
+            )
+        else:
+            try:
+                res = PuntoBusqueda.objects.buscar_arcgis_suggest(q, c)
                 self.update_logger_extras({
                     "q": q,
                     "c": c,
