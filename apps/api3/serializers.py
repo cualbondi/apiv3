@@ -136,3 +136,8 @@ class GeocoderSerializer(serializers.Serializer):
 
     def get_geom(self, obj):
         return json.loads(GEOSGeometry(obj['geom'], srid=4326).geojson)
+
+
+class GeocoderSuggestSerializer(serializers.Serializer):
+    nombre = serializers.ReadOnlyField()
+    magickey = serializers.ReadOnlyField()

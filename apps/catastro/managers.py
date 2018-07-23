@@ -8,6 +8,8 @@ from django.db import connection
 from django.db.models import Manager as GeoManager
 
 from django.apps import apps
+from .geopy_arcgis import ArcGIS, ArcGISSuggest
+from django.conf import settings
 
 
 def remove_multiple_strings(cur_string, replace_list):
@@ -31,6 +33,11 @@ class PuntoBusquedaManager:
 
     """
 
+    def __init__(self, *args, **kwargs):
+        self.geolocator = ArcGIS(username=settings.ARCGIS_USER, password=settings.ARCGIS_PASS, referer='cualbondi.com.ar')
+        self.suggestor = ArcGISSuggest(username=settings.ARCGIS_USER, password=settings.ARCGIS_PASS, referer='cualbondi.com.ar')
+        super().__init__(*args, **kwargs)
+
     def dictfetchall(self, cursor):
         "Returns all rows from a cursor as a dict"
         desc = cursor.description
@@ -53,7 +60,72 @@ class PuntoBusquedaManager:
             l.append(Struct(**d))
         return l
 
-    def buscar(self, query, ciudad_actual_slug=None):
+    def buscar_arcgis(self, query, ciudad_actual_slug=None):
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
+        xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
+        cx, cy, _, _ = ciudad_actual.centro.extent
+        locations = self.geolocator.geocode(
+            query,
+            exactly_one=False,
+            extra_params={
+                # searchExtent=lon1,lat1,lon2,lat2
+                'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
+                'location': "{},{}".format(cx, cy),
+                'city': quote(ciudad_actual.nombre.encode('utf8')),
+                'countryCode': 'ARG',
+                'sourceCountry': 'ARG'
+            }
+        )
+        if not locations:
+            return []
+
+        # comprehension para parsear lo devuelto por el google geocoder
+        ret = [
+            {
+                'nombre': r.address,
+                'precision': 1,
+                'geom': "POINT({} {})".format(r.longitude, r.latitude),
+                'tipo': ""
+            }
+            for r in locations
+        ]
+        return ret
+
+    def buscar_arcgis_suggest(self, query, ciudad_actual_slug=None):
+        #add = query + ", Argentina"
+        #add = quote(add.encode('utf8'))
+        # location la-plata
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
+        xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
+        cx, cy, _, _ = ciudad_actual.centro.extent
+        locations = self.suggestor.geocode(
+            query,
+            exactly_one=False,
+            extra_params={
+                # searchExtent=lon1,lat1,lon2,lat2
+                'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
+                'location': "{},{}".format(cx, cy),
+                'city': quote(ciudad_actual.nombre.encode('utf8')),
+                'countryCode': 'ARG',
+                'sourceCountry': 'ARG'
+            }
+        )
+        if not locations:
+            return []
+
+        # comprehension para parsear lo devuelto por el google geocoder
+        ret = [
+            {
+                'nombre': r["text"],
+                'magickey': r["magickey"]
+            }
+            for r in locations
+        ]
+        return ret
+
+    def buscar_cualbondi(self, query, ciudad_actual_slug=None):
         # podria reemplazar todo esto por un lucene/solr/elasticsearch
         # que tenga un campo texto y un punto asociado
 

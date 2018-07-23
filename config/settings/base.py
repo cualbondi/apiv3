@@ -225,5 +225,11 @@ ADMINS = [
 MANAGERS = ADMINS
 
 
+# ARCGIS GEOCODER
+# ------------------------------------------------------------------------------
+ARCGIS_USER = env('ARCGIS_USER', default='')
+ARCGIS_PASS = env('ARCGIS_PASS', default='')
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
