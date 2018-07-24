@@ -7,6 +7,7 @@ from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 
 from apps.catastro.models import Ciudad
 from apps.catastro.models import PuntoBusqueda
@@ -212,6 +213,7 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
                 })
                 return Response([])
 
+
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
@@ -220,12 +222,14 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+
 class RecorridosPorCiudad(viewsets.ModelViewSet):
     serializer_class = serializers.RecorridoModelSerializer
     # pagination_class = pagination.PageNumberPagination
     depth = 1
     def get_queryset(self):
         return Recorrido.objects.select_related('linea').filter(ciudad=self.kwargs.get('ciudad_id'))
+
 
 @api_view(['GET'])
 def match_recorridos(request, recorrido_id):
@@ -245,6 +249,7 @@ def match_recorridos(request, recorrido_id):
         response = dictfetchall(cursor)
     return Response(response)
 
+
 @api_view(['POST'])
 def set_osm_pair(request):
     pass
@@ -253,3 +258,19 @@ def set_osm_pair(request):
 @api_view(['GET'])
 def display_recorridos(request):
     pass
+
+
+class UserViewSet(viewsets.GenericViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        permissions = []
+        if request.user.is_staff:
+            permissions.append('staff')
+        return Response({
+            'username': request.user.username,
+            'firstName': request.user.first_name,
+            'lastName': request.user.last_name,
+            'email': request.user.email,
+            'permissions': permissions
+        })
