@@ -64,7 +64,7 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 # https://github.com/ottoyiu/django-cors-headers/#configuration
 CORS_ORIGIN_ALLOW_ALL = True
 
-SILK = True
+SILK = False
 if SILK:
     INSTALLED_APPS += ['silk']  # noqa F405
     MIDDLEWARE += ['silk.middleware.SilkyMiddleware']  # noqa F405
