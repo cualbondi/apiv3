@@ -60,7 +60,7 @@ class PuntoBusquedaManager:
             l.append(Struct(**d))
         return l
 
-    def buscar_arcgis(self, query, ciudad_actual_slug=None):
+    def buscar_arcgis(self, query, ciudad_actual_slug=None, magickey=None):
         ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
         ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
         xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
@@ -74,7 +74,8 @@ class PuntoBusquedaManager:
                 'location': "{},{}".format(cx, cy),
                 'city': quote(ciudad_actual.nombre.encode('utf8')),
                 'countryCode': 'ARG',
-                'sourceCountry': 'ARG'
+                'sourceCountry': 'ARG',
+                'magicKey': magickey
             }
         )
         if not locations:
