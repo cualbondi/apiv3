@@ -65,18 +65,20 @@ class PuntoBusquedaManager:
         ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
         xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
         cx, cy, _, _ = ciudad_actual.centro.extent
+        extra_params = {
+            # searchExtent=lon1,lat1,lon2,lat2
+            'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
+            'location': "{},{}".format(cx, cy),
+            'city': quote(ciudad_actual.nombre.encode('utf8')),
+            'countryCode': 'ARG',
+            'sourceCountry': 'ARG',
+        }
+        if magickey is not None and magickey != 'undefined':
+            extra_params['magicKey'] = magickey
         locations = self.geolocator.geocode(
             query,
             exactly_one=False,
-            extra_params={
-                # searchExtent=lon1,lat1,lon2,lat2
-                'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
-                'location': "{},{}".format(cx, cy),
-                'city': quote(ciudad_actual.nombre.encode('utf8')),
-                'countryCode': 'ARG',
-                'sourceCountry': 'ARG',
-                'magicKey': magickey
-            }
+            extra_params=extra_params
         )
         if not locations:
             return []
