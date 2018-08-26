@@ -10,7 +10,6 @@ from django.db.models import Manager as GeoManager, F
 from django.apps import apps
 from django.conf import settings
 
-from config.settings.base import GEOCODING_GOOGLE_KEY
 from .geopy_arcgis import ArcGIS, ArcGISSuggest
 
 def remove_multiple_strings(cur_string, replace_list):
@@ -423,7 +422,7 @@ class PuntoBusquedaManager:
         # http://stackoverflow.com/questions/9884475/using-google-maps-geocoder-from-python-with-urllib2
         add = query
         add = quote(add.encode('utf8'))
-        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?key={GEOCODING_GOOGLE_KEY}&language=es&region=ar&address={add}"
+        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?key={settings.GEOCODING_GOOGLE_KEY}&language=es&region=ar&address={add}"
         if bbox is not None:
             geocode_url = f'{geocode_url}&bounds={bbox}'
         # TODO: Test this change
