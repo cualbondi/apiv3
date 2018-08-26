@@ -2,13 +2,15 @@ import json
 from operator import itemgetter
 from urllib.parse import quote
 from urllib.request import urlopen
+import unicodedata
 
 from django.contrib.gis.geos import GEOSGeometry
 from django.db import connection
-from django.db.models import Manager as GeoManager
-
+from django.db.models import Manager as GeoManager, F
 from django.apps import apps
+from django.conf import settings
 
+from .geopy_arcgis import ArcGIS, ArcGISSuggest
 
 def remove_multiple_strings(cur_string, replace_list):
     for cur_word in replace_list:
@@ -30,6 +32,18 @@ class PuntoBusquedaManager:
     **Paradas
 
     """
+
+    def __init__(self, *args, **kwargs):
+        arcgis_args = {}
+        if settings.ARCGIS_USER:
+            arcgis_args['username'] = settings.ARCGIS_USER
+            arcgis_args['referer'] = 'cualbondi.com.ar'
+        if settings.ARCGIS_PASS:
+            arcgis_args['password'] = settings.ARCGIS_PASS
+            arcgis_args['referer'] = 'cualbondi.com.ar'
+        self.geolocator = ArcGIS(**arcgis_args)
+        self.suggestor = ArcGISSuggest(**arcgis_args)
+        super().__init__(*args, **kwargs)
 
     def dictfetchall(self, cursor):
         "Returns all rows from a cursor as a dict"
@@ -53,7 +67,126 @@ class PuntoBusquedaManager:
             l.append(Struct(**d))
         return l
 
-    def buscar(self, query, ciudad_actual_slug=None):
+    def buscar_arcgis(self, query, ciudad_actual_slug=None, magickey=None):
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
+        xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
+        cx, cy, _, _ = ciudad_actual.centro.extent
+        extra_params = {
+            # searchExtent=lon1,lat1,lon2,lat2
+            'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
+            'location': "{},{}".format(cx, cy),
+            'city': quote(ciudad_actual.nombre.encode('utf8')),
+            'countryCode': 'ARG',
+            'sourceCountry': 'ARG',
+        }
+        if magickey is not None and magickey != 'undefined':
+            extra_params['magicKey'] = magickey
+        locations = self.geolocator.geocode(
+            query,
+            exactly_one=False,
+            extra_params=extra_params
+        )
+        if not locations:
+            return []
+
+        # comprehension para parsear lo devuelto por el google geocoder
+        ret = [
+            {
+                'nombre': r.address,
+                'precision': 1,
+                'geom': "POINT({} {})".format(r.longitude, r.latitude),
+                'tipo': ""
+            }
+            for r in locations
+        ]
+        return ret
+
+
+    def buscar_arcgis_suggest(self, query, ciudad_actual_slug=None):
+        #add = query + ", Argentina"
+        #add = quote(add.encode('utf8'))
+        # location la-plata
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
+        xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
+        cx, cy, _, _ = ciudad_actual.centro.extent
+        locations = self.suggestor.geocode(
+            query,
+            exactly_one=False,
+            extra_params={
+                # searchExtent=lon1,lat1,lon2,lat2
+                'searchExtent': "{},{},{},{}".format(xmin, ymin, xmax, ymax),
+                'location': "{},{}".format(cx, cy),
+                'city': quote(ciudad_actual.nombre.encode('utf8')),
+                'countryCode': 'ARG',
+                'sourceCountry': 'ARG'
+            }
+        )
+        if not locations:
+            return []
+
+        # comprehension para parsear lo devuelto por el google geocoder
+        ret = [
+            {
+                'nombre': r["text"],
+                'magickey': r["magickey"]
+            }
+            for r in locations
+        ]
+        return ret
+
+    def deaccent(self, text):
+        """
+        Remove accentuation from the given string. Input text is either a unicode string or utf8 encoded bytestring.
+        Return input string with accents removed, as unicode.
+        """
+        norm = unicodedata.normalize("NFD", text)
+        result = ''.join(ch for ch in norm if unicodedata.category(ch) != 'Mn')
+        return unicodedata.normalize("NFC", result)
+
+    def normalize_query(self, query):
+        query = self.deaccent(query)
+        query = query.replace('.', ' ')
+        query = query.replace(',', ' ')
+        query = ' '.join(query.split())
+        query = query.strip()
+        query = query.lower()
+        return query
+
+    def geocode(self, query, ciudad_actual_slug=None):
+        google = self.buscar_google(query, ciudad_actual_slug)
+        if google is not None:
+            return google
+        return self.buscar_arcgis(query, ciudad_actual_slug)
+
+    def buscar_google(self, query, ciudad_actual_slug=None):
+        google_cache_model = apps.get_app_config('catastro').get_model("GoogleGeocoderCache")
+        ciudad_model = apps.get_app_config('catastro').get_model("Ciudad")
+        ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
+        xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
+        cx, cy, _, _ = ciudad_actual.centro.extent
+        bbox =  "{},{}|{},{}".format(ymin, xmin, ymax, xmax)
+        normalized_query = self.normalize_query(query)
+        try:
+            match = google_cache_model.objects.get(query=normalized_query, ciudad=ciudad_actual_slug)
+            match.hit = F('hit') + 1
+            match.save()
+            return json.loads(match.results)
+        except google_cache_model.DoesNotExist:
+            results = self.rawGeocoder(query, bbox)
+            if len(results) == 0:
+                return None
+            google_cache_model.objects.create(
+                query=normalized_query,
+                results=json.dumps(results),
+                ciudad=ciudad_actual_slug
+            )
+            return results
+
+
+
+    def buscar_cualbondi(self, query, ciudad_actual_slug=None):
         # podria reemplazar todo esto por un lucene/solr/elasticsearch
         # que tenga un campo texto y un punto asociado
 
@@ -285,14 +418,18 @@ class PuntoBusquedaManager:
         l = self.dictfetchall(cursor)
         return l
 
-    def rawGeocoder(self, query):
+    def rawGeocoder(self, query, bbox=None):
         # http://stackoverflow.com/questions/9884475/using-google-maps-geocoder-from-python-with-urllib2
-        add = query + ", Argentina"
+        add = query
         add = quote(add.encode('utf8'))
-        geocode_url = "http://maps.googleapis.com/maps/api/geocode/json?language=es&address=%s&sensor=false" % add
+        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?key={settings.GEOCODING_GOOGLE_KEY}&language=es&region=ar&address={add}"
+        if bbox is not None:
+            geocode_url = f'{geocode_url}&bounds={bbox}'
         # TODO: Test this change
         req = urlopen(geocode_url)
         res = json.loads(req.read())
+        if res['status'] != 'OK':
+            return []
         # comprehension para parsear lo devuelto por el google geocoder
         ret = [
             {

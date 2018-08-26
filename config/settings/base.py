@@ -225,5 +225,13 @@ ADMINS = [
 MANAGERS = ADMINS
 
 
+# ARCGIS GEOCODER
+# ------------------------------------------------------------------------------
+ARCGIS_USER = env('ARCGIS_USER', default='')
+ARCGIS_PASS = env('ARCGIS_PASS', default='')
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+GEOCODING_GOOGLE_KEY = env('GEOCODING_GOOGLE_KEY', default='')

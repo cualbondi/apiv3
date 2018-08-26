@@ -164,6 +164,7 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
         Parámetros querystring
 
          - `q` obligatorio: string a geobuscar
+         - `mk` opcional (arcgis): arcgis `magic key` si viene del suggest
          - `c` opcional: slug de la ciudad donde buscar
 
         Busca el valor del parámetro `q`
@@ -184,7 +185,37 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
     """
     serializer_class = serializers.GeocoderSerializer
     queryset = ''
-    
+
+    def list(self, request):
+        q = request.query_params.get('q', None)
+        c = request.query_params.get('c', None)
+        mk = request.query_params.get('mk', None)
+        if q is None:
+            raise exceptions.ValidationError(
+                {'detail': 'expected \'q\' parameter'}
+            )
+        else:
+            try:
+                res = PuntoBusqueda.objects.geocode(q, c)
+                ser = self.get_serializer(res, many=True)
+                return Response(ser.data)
+            except ObjectDoesNotExist:
+                return Response([])
+
+
+class GeocoderSuggestViewSet(viewsets.GenericViewSet):
+    """
+        Parámetros querystring
+
+         - `q` obligatorio: string a geobuscar
+         - `c` opcional: slug de la ciudad donde buscar
+
+        Busca el valor del parámetro `q`
+        usando Arcgis Suggest
+    """
+    serializer_class = serializers.GeocoderSuggestSerializer
+    queryset = ''
+
     def list(self, request):
         q = request.query_params.get('q', None)
         c = request.query_params.get('c', None)
@@ -194,18 +225,8 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
             )
         else:
             try:
-                res = PuntoBusqueda.objects.buscar(q, c)
-                self.update_logger_extras({
-                    "q": q,
-                    "c": c,
-                    "count": len(res)
-                })
+                res = PuntoBusqueda.objects.buscar_arcgis_suggest(q, c)
                 ser = self.get_serializer(res, many=True)
                 return Response(ser.data)
             except ObjectDoesNotExist:
-                self.update_logger_extras({
-                    "q": q,
-                    "c": c,
-                    "count": 0
-                })
                 return Response([])

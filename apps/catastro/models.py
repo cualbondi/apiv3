@@ -239,3 +239,11 @@ class PuntoBusqueda(models.Model):
 
     class Meta:
         abstract = True
+
+
+class GoogleGeocoderCache(models.Model):
+    query = models.TextField()
+    results = models.TextField()
+    ciudad = models.TextField()
+    last_updated = models.DateTimeField(auto_now=True)
+    hit = models.IntegerField(default=1)
