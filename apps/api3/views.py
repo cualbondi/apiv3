@@ -196,7 +196,7 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
             )
         else:
             try:
-                res = PuntoBusqueda.objects.buscar_arcgis(q, c, mk)
+                res = PuntoBusqueda.objects.geocode(q, c)
                 ser = self.get_serializer(res, many=True)
                 return Response(ser.data)
             except ObjectDoesNotExist:
