@@ -35,8 +35,15 @@ class PuntoBusquedaManager:
     """
 
     def __init__(self, *args, **kwargs):
-        self.geolocator = ArcGIS(username=settings.ARCGIS_USER, password=settings.ARCGIS_PASS, referer='cualbondi.com.ar')
-        self.suggestor = ArcGISSuggest(username=settings.ARCGIS_USER, password=settings.ARCGIS_PASS, referer='cualbondi.com.ar')
+        arcgis_args = {}
+        if settings.ARCGIS_USER:
+            arcgis_args['username'] = settings.ARCGIS_USER
+            arcgis_args['referer'] = 'cualbondi.com.ar'
+        if settings.ARCGIS_PASS:
+            arcgis_args['password'] = settings.ARCGIS_PASS
+            arcgis_args['referer'] = 'cualbondi.com.ar'
+        self.geolocator = ArcGIS(**arcgis_args)
+        self.suggestor = ArcGISSuggest(**arcgis_args)
         super().__init__(*args, **kwargs)
 
     def dictfetchall(self, cursor):
