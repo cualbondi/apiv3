@@ -17,4 +17,4 @@ django-cors-headers==2.4.0 # https://github.com/ottoyiu/django-cors-headers
 
 django-leaflet==0.24.0 # https://github.com/makinacorpus/django-leaflet
 
-geopy==1.15.0 # https://github.com/geopy/geopy
+geopy==1.16.0 # https://github.com/geopy/geopy
