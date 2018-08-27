@@ -247,3 +247,6 @@ class GoogleGeocoderCache(models.Model):
     ciudad = models.TextField()
     last_updated = models.DateTimeField(auto_now=True)
     hit = models.IntegerField(default=1)
+
+    class Meta:
+        unique_together = ('query', 'ciudad')

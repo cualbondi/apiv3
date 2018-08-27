@@ -5,12 +5,13 @@ from urllib.request import urlopen
 import unicodedata
 
 from django.contrib.gis.geos import GEOSGeometry
-from django.db import connection
+from django.db import connection, IntegrityError
 from django.db.models import Manager as GeoManager, F
 from django.apps import apps
 from django.conf import settings
 
 from .geopy_arcgis import ArcGIS, ArcGISSuggest
+
 
 def remove_multiple_strings(cur_string, replace_list):
     for cur_word in replace_list:
@@ -102,7 +103,6 @@ class PuntoBusquedaManager:
         ]
         return ret
 
-
     def buscar_arcgis_suggest(self, query, ciudad_actual_slug=None):
         #add = query + ", Argentina"
         #add = quote(add.encode('utf8'))
@@ -166,7 +166,7 @@ class PuntoBusquedaManager:
         ciudad_actual = ciudad_model.objects.get(slug=ciudad_actual_slug)
         xmin, ymin, xmax, ymax = ciudad_actual.poligono.extent
         cx, cy, _, _ = ciudad_actual.centro.extent
-        bbox =  "{},{}|{},{}".format(ymin, xmin, ymax, xmax)
+        bbox = "{},{}|{},{}".format(ymin, xmin, ymax, xmax)
         normalized_query = self.normalize_query(query)
         try:
             match = google_cache_model.objects.get(query=normalized_query, ciudad=ciudad_actual_slug)
@@ -177,14 +177,18 @@ class PuntoBusquedaManager:
             results = self.rawGeocoder(query, bbox)
             if len(results) == 0:
                 return None
-            google_cache_model.objects.create(
-                query=normalized_query,
-                results=json.dumps(results),
-                ciudad=ciudad_actual_slug
-            )
+
+            # avoid possible race condition here where two geocoding calls could resolve concurrently
+            try:
+                google_cache_model.objects.create(
+                    query=normalized_query,
+                    results=json.dumps(results),
+                    ciudad=ciudad_actual_slug
+                )
+            except IntegrityError:
+                # result already exists on db at this point
+                pass
             return results
-
-
 
     def buscar_cualbondi(self, query, ciudad_actual_slug=None):
         # podria reemplazar todo esto por un lucene/solr/elasticsearch
