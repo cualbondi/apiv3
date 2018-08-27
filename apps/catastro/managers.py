@@ -145,7 +145,6 @@ class PuntoBusquedaManager:
             return None
         city = response.raw.get('address').get('city')
         display_name = response.raw.get('display_name')
-        print(display_name)
         short_response = display_name[:display_name.find(city)] + city
         return short_response
 
