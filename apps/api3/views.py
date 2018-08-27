@@ -3,7 +3,7 @@ from django.contrib.gis.measure import D
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import exceptions
 from rest_framework import pagination
-from rest_framework import viewsets
+from rest_framework import viewsets, views
 from rest_framework.response import Response
 
 from apps.catastro.models import Ciudad
@@ -230,3 +230,15 @@ class GeocoderSuggestViewSet(viewsets.GenericViewSet):
                 return Response(ser.data)
             except ObjectDoesNotExist:
                 return Response([])
+
+class ReverseGeocoderView(views.APIView):
+
+    def get(self, request):
+        q = request.query_params.get('q', None)
+        c = request.query_params.get('c', None)
+        if q is None:
+            raise exceptions.ValidationError(
+                {'detail': 'expected \'q\' parameter'}
+            )
+        res = PuntoBusqueda.objects.reverse_geocode(q, c)
+        return Response(res)

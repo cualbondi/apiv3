@@ -12,6 +12,7 @@ router.register(r'geocoder', views.GeocoderViewSet, "geocoder")
 router.register(r'geocoder/suggest', views.GeocoderSuggestViewSet, "geocoder/suggest")
 
 urlpatterns = [
+    url(r'^geocoder/reverse/', views.ReverseGeocoderView.as_view()),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include((router.urls, 'v3'), namespace='v3')),
 ]
