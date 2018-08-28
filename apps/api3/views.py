@@ -190,7 +190,7 @@ class GeocoderViewSet(LoggingMixin, viewsets.GenericViewSet):
         q = request.query_params.get('q', None)
         c = request.query_params.get('c', None)
         mk = request.query_params.get('mk', None)
-        if q is None:
+        if not q:
             raise exceptions.ValidationError(
                 {'detail': 'expected \'q\' parameter'}
             )
