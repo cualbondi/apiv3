@@ -155,6 +155,7 @@ class PuntoBusquedaManager:
         return query
 
     def geocode(self, query, ciudad_actual_slug=None):
+        assert query != ''
         google = self.buscar_google(query, ciudad_actual_slug)
         if google is not None:
             return google
