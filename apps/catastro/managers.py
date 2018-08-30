@@ -11,6 +11,9 @@ from django.apps import apps
 from django.conf import settings
 
 from .geopy_arcgis import ArcGIS, ArcGISSuggest
+from geopy.geocoders import Nominatim
+
+nominatim = Nominatim(user_agent='cualbondi', timeout=5)
 
 
 def remove_multiple_strings(cur_string, replace_list):
@@ -135,6 +138,15 @@ class PuntoBusquedaManager:
             for r in locations
         ]
         return ret
+
+    def reverse_geocode(self, query, ciudad_actual_slug=None):
+        response = nominatim.reverse(query, exactly_one=True, language='es')
+        if response is None:
+            return None
+        city = response.raw.get('address').get('city')
+        display_name = response.raw.get('display_name')
+        short_response = display_name[:display_name.find(city)] + city
+        return short_response
 
     def deaccent(self, text):
         """

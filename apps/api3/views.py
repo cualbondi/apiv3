@@ -3,7 +3,7 @@ from django.contrib.gis.measure import D
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import exceptions
 from rest_framework import pagination
-from rest_framework import viewsets
+from rest_framework import viewsets, views
 from rest_framework.response import Response
 
 from apps.catastro.models import Ciudad
@@ -14,12 +14,12 @@ from . import serializers
 from .mixins import LoggingMixin
 
 
-class CiudadesViewSet(viewsets.ModelViewSet):
+class CiudadesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.CiudadSerializer
     queryset = Ciudad.objects.all()
 
 
-class LineasViewSet(viewsets.ModelViewSet):
+class LineasViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.LineaSerializer
     queryset = Linea.objects.all()
 
@@ -39,7 +39,7 @@ class CBPagination(pagination.PageNumberPagination):
         })
 
 
-class RecorridosViewSet(LoggingMixin, viewsets.ModelViewSet):
+class RecorridosViewSet(LoggingMixin, viewsets.GenericViewSet):
     """
         Parametros querystring
 
@@ -99,7 +99,7 @@ class RecorridosViewSet(LoggingMixin, viewsets.ModelViewSet):
                 page = self.paginate_queryset(qs)
                 self.update_logger_extras({
                     "point1": "{},{}".format(lp[0]['p'].y, lp[0]['p'].x),
-                # "lat,lon" https://www.elastic.co/guide/en/elasticsearch/reference/1.3/mapping-geo-point-type.html
+                    # "lat,lon" https://www.elastic.co/guide/en/elasticsearch/reference/1.3/mapping-geo-point-type.html
                     "rad1": lp[0]['r'],
                     "point2": None,
                     "rad2": None,
@@ -124,7 +124,7 @@ class RecorridosViewSet(LoggingMixin, viewsets.ModelViewSet):
             page = self.paginate_queryset(routerResults)
             self.update_logger_extras({
                 "point1": "{},{}".format(lp[0]['p'].y, lp[0]['p'].x),
-            # "lat,lon" https://www.elastic.co/guide/en/elasticsearch/reference/1.3/mapping-geo-point-type.html
+                # "lat,lon" https://www.elastic.co/guide/en/elasticsearch/reference/1.3/mapping-geo-point-type.html
                 "rad1": lp[0]['r'],
                 "point2": "{},{}".format(lp[1]['p'].y, lp[1]['p'].x),
                 "rad2": lp[1]['r'],
@@ -230,3 +230,16 @@ class GeocoderSuggestViewSet(viewsets.GenericViewSet):
                 return Response(ser.data)
             except ObjectDoesNotExist:
                 return Response([])
+
+
+class ReverseGeocoderView(viewsets.GenericViewSet):
+
+    def list(self, request):
+        q = request.query_params.get('q', None)
+        c = request.query_params.get('c', None)
+        if q is None:
+            raise exceptions.ValidationError(
+                {'detail': 'expected \'q\' parameter'}
+            )
+        res = PuntoBusqueda.objects.reverse_geocode(q, c)
+        return Response(res)
